@@ -1,4 +1,4 @@
-import awt.Point;
+import java.awt.Point;
 
 public class ChessMove{
 	public Point pos;
