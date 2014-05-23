@@ -1,17 +1,15 @@
-import Pieces.*;
-import ChessMove;
-import awt.Point;
+import java.awt.Point;
 
 public class ChessBoard{
 	public Piece Board[][];
-	public ChessMove Moves[] = new ChessMove[];
+	//public ChessMove Moves[] = new ChessMove[];
 	private Point Size;
 	
 	public boolean isEmpty(Point pos){
-		return (Board[pos.x][pos.y]==NULL);
+		return (Board[pos.x][pos.y]==null);
 	}
-	public boolesan isInBounds(Point pos){
-		
+	public boolean isInBounds(Point pos){
+		return (pos.x>0&&pos.y>0&&pos.x<Size.x&&pos.y<Size.y);
 	}
 	
 	public boolean inCheck(String cteam){
@@ -23,7 +21,7 @@ public class ChessBoard{
 	
 		
 	
-		if (!isEmpty(Point(pos.x+delta.x,pos.y+delta.y))){
+		if (!isEmpty(new Point(pos.x+delta.x,pos.y+delta.y))){
 			return false;
 		}
 		
@@ -32,17 +30,13 @@ public class ChessBoard{
 		
 		///CHECK FOR CHECK if in check, must remedy before moving something else, and cannot put into check again
 		
-		bool incheck = 
 		
 		
-		
+		String tstr = new String(Board[pos.x][pos.y].toString());
 	
-		if (Board[pos.x][pos.y].toString().equals('K')){ //King='K' Knight='N' 
-			
+		if (tstr.equals('K')){ //King='K' Knight='N' 
+			System.out.println("DERP");
 		}
-		
-		
-		
 		
 	}
 	
@@ -59,61 +53,79 @@ public class ChessBoard{
 	}
 	
 	public int reset(String initstr[]){
-		if (initstr.length!=size.x*size.y){
+		Board = new Piece[Size.x][Size.y];
+		if (initstr.length!=Size.x*Size.y){
 			return -1;
 		}
 		int curindex=0;
 		for (String cur : initstr){
-			if (cur.length==0){
-				Board[curindex]=null;
+		
+			int thex=curindex/Size.x;
+			int they=curindex%Size.x;
+			if (cur.length()==0){
+				Board[thex][they]=null;
 			}
 			else{
-				String pc = cur.substr(0,1); //Type
-				String team = cur.substr(1,cur.length-1)); //Team
+				String pc = cur.substring(0,1); //Type
+				String team = cur.substring(1,cur.length()-1); //Team
+				
 				
 				if (pc.equals('P')){
-					Board[curindex]=new Pawn(Point(),team);
+					Board[thex][they]=new Pawn(new Point(thex,they),team);
 				}
-				else if (pcequals('K')){
-					Board[curindex]=new King(Point(),team);
+				else if (pc.equals('K')){
+					Board[thex][they]=new King(new Point(thex,they),team);
 				}
-				else if (pcequals('Q')){
-					Board[curindex]=new Queen(Point(),team);
+				else if (pc.equals('Q')){
+					Board[thex][they]=new Queen(new Point(thex,they),team);
 				}
-				else if (pcequals('N')){
-					Board[curindex]=new Knight(Point(),team);
+				else if (pc.equals('N')){
+					Board[thex][they]=new Knight(new Point(thex,they),team);
 				}
-				else if (pcequals('B')){
-					Board[curindex]=new Bishop(Point(),team);
+				else if (pc.equals('B')){
+					Board[thex][they]=new Bishop(new Point(thex,they),team);
 				}
-				else if (pcequals('R')){
-					Board[curindex]=new Rook(Point(),team);
+				else if (pc.equals('R')){
+					Board[thex][they]=new Rook(new Point(thex,they),team);
 				}
 				else{
-					Board[curindex]=null;
+					Board[thex][they]=null;
 				}
 			}
-			
+			curindex++;
 		}
 		return 1;
 	}
 	
 	public void defaultReset(){
-		static String dstring[] = {"Rblack","Nblack","Bblack","Qblack","Kblack","Bblack","Nblack","Rblack",
-								   "Pblack","Pblack","Pblack","Pblack","Pblack","Pblack","Pblack","Pblack",
-									0,0,0,0,0,0,0,0,
-									0,0,0,0,0,0,0,0,
-									0,0,0,0,0,0,0,0,
-									0,0,0,0,0,0,0,0,						
-								   "Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite",
-								   "Rwhite","Nwhite","Bwhite","Qwhite","Kwhite","Bwhite","Nwhite","Rwhite",
+		String dstring[] = new String [] {	"Rblack","Nblack","Bblack","Qblack","Kblack","Bblack","Nblack","Rblack",
+											"Pblack","Pblack","Pblack","Pblack","Pblack","Pblack","Pblack","Pblack",
+											"","","","","","","","",	
+											"","","","","","","","",
+											"","","","","","","","",
+											"","","","","","","","",									
+											"Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite",
+											"Rwhite","Nwhite","Bwhite","Qwhite","Kwhite","Bwhite","Nwhite","Rwhite",
 									};
 	}
 	
 	
-	public ChessBoard(Point size = Point(8,8)){
-		
+	public ChessBoard(Point isize){
+		Size=isize;
 		defaultReset();
 	}	
+	
+	public void DisplayBoard(){
+		for (int tx = 0; tx < Size.x; tx++){
+			for (int ty = 0; ty < Size.y; ty++){
+				if (Board[tx][ty]==null){
+					System.out.print('_');
+				}
+				else{
+					System.out.print(Board[tx][ty]);
+				}
+			}	
+		}
+	}
 	
 }
