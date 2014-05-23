@@ -1,11 +1,12 @@
-public class Bishop extends Piece {
+public class King extends Piece {
 
     public String toString() {
-	return "B";
+	return "K";
     }
 
     public boolean legalMove(Point delta) {
-	return Math.abs(delta.x) == Math.abs(delta.y) &&
+	return Math.abs(deltay.x) <= 1 &&
+	    Math.abs(delta.y) <= 1 &&
 	    !delta.equals(new Point(0,0));
     }
 }
