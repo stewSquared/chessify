@@ -1,13 +1,19 @@
 public abstract class Piece {
 
     private Point pos;
+    private String team;
 
-    protected abstract boolean legalMove(Point delta);
+    public abstract boolean legalMove(Point delta);
 
     public abstract String toString();
 
-    public Piece(Point pos) {
+    public Piece(Point pos, String team) {
 	this.pos = pos;
+	this.team = team;
+    }
+
+    public string getTeam() {
+	return this.team;
     }
 	
     public Point getPosition() {
