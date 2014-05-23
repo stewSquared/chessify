@@ -1,5 +1,9 @@
 public class Rook extends Piece {
 
+    public Rook(Point pos, String team) {
+	return super(pos, team);
+    }
+
     public String toString() {
 	return "R";
     }

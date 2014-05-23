@@ -1,5 +1,9 @@
 public class King extends Piece {
 
+    public King(Point pos, String team) {
+	return super(pos, team);
+    }
+
     public String toString() {
 	return "K";
     }

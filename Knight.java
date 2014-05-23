@@ -1,5 +1,9 @@
 public class Knight extends Piece {
 
+    public Knight(Point pos, String team) {
+	return super(pos, team);
+    }
+
     public String toString() {
 	return "N";
     }

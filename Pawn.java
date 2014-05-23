@@ -1,8 +1,8 @@
 public class Pawn extends Piece {
 
     public Pawn(Point pos, String team) {
-	this.hasMoved = false
-	return super(pos, team)
+	this.hasMoved = false;
+	return super(pos, team);
     }
 
     public String toString() {

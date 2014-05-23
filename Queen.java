@@ -1,5 +1,9 @@
 public class Queen extends Piece {
 
+    public Queen(Point pos, String team) {
+	return super(pos, team);
+    }
+
     public String toString() {
 	return "Q";
     }

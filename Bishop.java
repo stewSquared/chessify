@@ -1,5 +1,9 @@
 public class Bishop extends Piece {
 
+    public Bishop(Point pos, String team) {
+	return super(pos, team);
+    }
+
     public String toString() {
 	return "B";
     }

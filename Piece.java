@@ -1,3 +1,5 @@
+import java.awt.Point;
+
 public abstract class Piece {
 
     private Point pos;
