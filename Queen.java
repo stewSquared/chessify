@@ -22,7 +22,7 @@ public class Queen extends Piece {
 
 	while (!p.equals(dest)) {
 	    if (!b.isEmpty(p)) return false;
-	    p.translate(d)
+	    p.translate(d);
 	}
 
 	return true;
