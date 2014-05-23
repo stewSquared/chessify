@@ -1,3 +1,5 @@
+import java.awt.Point;
+
 public class Pawn extends Piece {
 
     public Pawn(Point pos, String team) {

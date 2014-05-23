@@ -1,3 +1,5 @@
+import java.awt.Point;
+
 public class Queen extends Piece {
 
     public Queen(Point pos, String team) {

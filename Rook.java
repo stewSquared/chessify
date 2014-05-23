@@ -1,3 +1,5 @@
+import java.awt.Point;
+
 public class Rook extends Piece {
 
     public Rook(Point pos, String team) {

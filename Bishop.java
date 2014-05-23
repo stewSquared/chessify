@@ -1,3 +1,5 @@
+import java.awt.Point;
+
 public class Bishop extends Piece {
 
     public Bishop(Point pos, String team) {
