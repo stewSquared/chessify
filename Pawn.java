@@ -17,8 +17,12 @@ public class Pawn extends Piece {
 	if (dist == 1) {
 	    return emptyTarget ? delta.x == 0 : Math.abs(delta.x) == 1;
 	} else {
-	    return emptyTarget && dist == 2;
+	    Point path = new Point(pos);
+	    path.translate(0, delta.y / Math.abs(delta.y));
+	    return dist == 2
+		&& delta.x == 0
+		&& emptyTarget
+		&& b.isEmpty(path);
 	}
     }
-
 }
