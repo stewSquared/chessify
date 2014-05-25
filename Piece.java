@@ -10,8 +10,8 @@ public abstract class Piece {
     public abstract String toString();
 
     public Piece(Point inpos, String inteam) {
-		pos = inpos;
-		team = team;
+		pos = new Point(inpos);
+		team = new String(inteam);
     }
 	public Piece(){
 		pos=new Point();

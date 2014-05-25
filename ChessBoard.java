@@ -11,12 +11,16 @@ public class ChessBoard{
 	public boolean isInBounds(Point pos){
 		return (pos.x>0&&pos.y>0&&pos.x<Size.x&&pos.y<Size.y);
 	}
-	
 	public boolean inCheck(String cteam){
 		return false;
 	}
+	public Piece getPiece(Point pos){
+		return Board[pos.x][pos.y];
+	}
+	public Piece getPiece(int tx, int ty){
+		return Board[ty][ty];
+	}
 	
-	//Returns true if position is empty and a legal chess move, false if position occupied
 	public boolean legalMove(Point pos, Point delta){//dx/dy 
 	
 		
@@ -25,20 +29,13 @@ public class ChessBoard{
 			return false;
 		}
 		
-		//CHECK ALONG PATH FOR OBSTRUCTIONS
-		
-		
-		///CHECK FOR CHECK if in check, must remedy before moving something else, and cannot put into check again
-		
-		
-		
 		String tstr = new String(Board[pos.x][pos.y].toString());
 	
 		if (tstr.equals('K')){ //King='K' Knight='N' 
 			System.out.println("DERP");
 		}
 		
-		return false;
+		return true;
 		
 	}
 	
@@ -108,7 +105,7 @@ public class ChessBoard{
 											"","","","","","","","",
 											"","","","","","","","",									
 											"Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite",
-											"Rwhite","Nwhite","Bwhite","Qwhite","Kwhite","Bwhite","Nwhite","Rwhite",
+											"Rwhite","Nwhite","Bwhite","Qwhite","Kwhite","Bwhite","Nwhite","Rwhite"
 									};
 		reset(dstring);
 	}
@@ -120,19 +117,59 @@ public class ChessBoard{
 	}	
 	
 	public void displayBoard(){
+	
+	
+		System.out.print(""+(char)201 + " ");
+		for (int a = 0; a < Size.y; a++){
+			char tbase = 'a';
+			tbase += a;
+			System.out.print(tbase);
+		}
+		
+		System.out.print(" "+ (char)187+"\r\n\r\n");
+	
 		for (int tx = 0; tx < Size.x; tx++){
+		
+			System.out.print(""+(9-(tx+1))+" ");
+		
 			for (int ty = 0; ty < Size.y; ty++){
 				
 				if (Board[tx][ty]==null){
-					System.out.print('_');
+					char c;
+					if ((tx+ty)%2==0)
+						c=178;//219
+					else
+						c=' ';
+					System.out.print(c);
 				}
 				else{
-					System.out.print(Board[tx][ty].toString());
+					String tm = Board[tx][ty].getTeam();
+					if (tm.equals("white")){
+						System.out.print(Board[tx][ty].toString());
+					}
+					else{
+						System.out.print((Board[tx][ty].toString()).toLowerCase());
+					}
 				}
 
 			}
+			
+			System.out.print(" "+(9-(tx+1)));
+			
 			System.out.print("\r\n");
 		}
+		
+		System.out.print("\r\n");
+		
+		System.out.print(""+(char)200 + " ");
+		for (int a = 0; a < Size.y; a++){
+			char tbase = 'a';
+			tbase += a;
+			System.out.print(tbase);
+		}
+		
+		System.out.print(" "+ (char)188+"\r\n\r\n");
+		
 	}
 	
 }
