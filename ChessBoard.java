@@ -13,7 +13,7 @@ public class ChessBoard{
 	}
 	
 	public boolean inCheck(String cteam){
-		
+		return false;
 	}
 	
 	//Returns true if position is empty and a legal chess move, false if position occupied
@@ -38,18 +38,20 @@ public class ChessBoard{
 			System.out.println("DERP");
 		}
 		
+		return false;
+		
 	}
 	
 	//Again returns true if position is empty && the move is valid according to the piece
 	public boolean move(Point pos, Point delta){
-		if ((!Board[pos.x][pos.y].legalMove(delta))||(!legalMove(pos,delta))){
+		if ((!Board[pos.x][pos.y].legalMove(delta,this))||(!legalMove(pos,delta))){
 			return false; //Move is invalid.
 		}
 		
 		
 		
 		
-		
+		return true;
 	}
 	
 	public int reset(String initstr[]){
@@ -59,33 +61,34 @@ public class ChessBoard{
 		}
 		int curindex=0;
 		for (String cur : initstr){
-		
 			int thex=curindex/Size.x;
 			int they=curindex%Size.x;
 			if (cur.length()==0){
 				Board[thex][they]=null;
 			}
 			else{
+				
+				
 				String pc = cur.substring(0,1); //Type
-				String team = cur.substring(1,cur.length()-1); //Team
+				String team = cur.substring(1,cur.length()); //Team
 				
 				
-				if (pc.equals('P')){
+				if (pc.equals("P")){
 					Board[thex][they]=new Pawn(new Point(thex,they),team);
 				}
-				else if (pc.equals('K')){
+				else if (pc.equals("K")){
 					Board[thex][they]=new King(new Point(thex,they),team);
 				}
-				else if (pc.equals('Q')){
+				else if (pc.equals("Q")){
 					Board[thex][they]=new Queen(new Point(thex,they),team);
 				}
-				else if (pc.equals('N')){
+				else if (pc.equals("N")){
 					Board[thex][they]=new Knight(new Point(thex,they),team);
 				}
-				else if (pc.equals('B')){
+				else if (pc.equals("B")){
 					Board[thex][they]=new Bishop(new Point(thex,they),team);
 				}
-				else if (pc.equals('R')){
+				else if (pc.equals("R")){
 					Board[thex][they]=new Rook(new Point(thex,they),team);
 				}
 				else{
@@ -107,6 +110,7 @@ public class ChessBoard{
 											"Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite",
 											"Rwhite","Nwhite","Bwhite","Qwhite","Kwhite","Bwhite","Nwhite","Rwhite",
 									};
+		reset(dstring);
 	}
 	
 	
@@ -115,16 +119,19 @@ public class ChessBoard{
 		defaultReset();
 	}	
 	
-	public void DisplayBoard(){
+	public void displayBoard(){
 		for (int tx = 0; tx < Size.x; tx++){
 			for (int ty = 0; ty < Size.y; ty++){
+				
 				if (Board[tx][ty]==null){
 					System.out.print('_');
 				}
 				else{
-					System.out.print(Board[tx][ty]);
+					System.out.print(Board[tx][ty].toString());
 				}
-			}	
+
+			}
+			System.out.print("\r\n");
 		}
 	}
 	

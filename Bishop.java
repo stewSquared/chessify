@@ -2,31 +2,34 @@ import java.awt.Point;
 
 public class Bishop extends Piece {
 
-    public Bishop(Point pos, String team) {
-	return super(pos, team);
-    }
+	public Bishop(Point inpos, String inteam){
+		super(inpos,inteam);
+	}
 
     public String toString() {
-	return "B";
+		return "B";
     }
 
     public boolean legalMove(Point delta, ChessBoard b) {
-	if (Math.abs(delta.x) != Math.abs(delta.y) ||
-	    delta.equals(new Point(0,0))) return false;
+		if (Math.abs(delta.x) != Math.abs(delta.y) ||
+			delta.equals(new Point(0,0))) return false;
 
-	Point d = new Point(delta.x * 1, delta.y * 1);
+		Point d = new Point();
+		d=delta;
 
-	Point p = new Point(this.pos);
-	p.translate(d);
+		Point p = new Point();
+		p=pos;
+		p.translate(d.x,d.y);
 
-	point dest = new Point(this.pos);
-	dest.translate(delta);
+		Point dest = new Point();
+		dest=pos;
+		dest.translate(delta.x,delta.y);
 
-	while (!p.equals(dest)) {
-	    if (!b.isEmpty(p)) return false;
-	    p.translate(d);
-	}
+		while (!p.equals(dest)) {
+			if (!b.isEmpty(p)) return false;
+			p.translate(d.x,d.y);
+		}
 
-	return true;
+		return true;
     }
 }

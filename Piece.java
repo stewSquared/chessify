@@ -2,32 +2,36 @@ import java.awt.Point;
 
 public abstract class Piece {
 
-    private Point pos;
-    private String team;
+    protected Point pos; ///Must be protected in order for derived classes to access
+    protected String team;
 
-    public abstract boolean legalMove(Point delta);
+    public abstract boolean legalMove(Point delta, ChessBoard b);
 
     public abstract String toString();
 
-    public Piece(Point pos, String team) {
-	this.pos = pos;
-	this.team = team;
+    public Piece(Point inpos, String inteam) {
+		pos = inpos;
+		team = team;
     }
+	public Piece(){
+		pos=new Point();
+		team=new String();
+	}
 
-    public string getTeam() {
-	return this.team;
+    public String getTeam() {
+		return team;
     }
 	
     public Point getPosition() {
-	return pos;
+		return pos;
     }
 
-    public Boolean move(Point delta) {
-	if (this.legalMove(delta)) {
-	    pos.translate(delta.x, delta.y);
-	    return True;
-	} else {
-	    return False;
-	}
+    public Boolean move(Point delta, ChessBoard b) {
+		if (legalMove(delta,b)) {
+			pos.translate(delta.x, delta.y);
+			return true;
+		} else {
+			return false;
+		}
     }
 }

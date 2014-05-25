@@ -2,17 +2,17 @@ import java.awt.Point;
 
 public class Knight extends Piece {
 
-    public Knight(Point pos, String team) {
-	return super(pos, team);
-    }
+	public Knight(Point inpos, String inteam){
+		super(inpos,inteam);
+	}
 
     public String toString() {
-	return "N";
+		return "N";
     }
 
-    protected boolean legalMove(Point delta) {
-	return Math.abs(move.x) + Math.abs(move.y) == 3 &&
-	    ((Math.abs(move.x) == 1) ^ (Math.abs(move.y) == 1)) &&
-	    !delta.equals(new Point(0,0));
+    public boolean legalMove(Point delta, ChessBoard b) {
+		return ((Math.abs(delta.x) + Math.abs(delta.y) == 3) &&
+			((Math.abs(delta.x) == 1) ^ (Math.abs(delta.y) == 1)) &&
+			(!delta.equals(new Point(0,0))));
     }
 }
