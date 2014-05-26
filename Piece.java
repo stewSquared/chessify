@@ -27,7 +27,7 @@ public abstract class Piece {
 	return pos;
     }
     
-    public Boolean move(Point delta, ChessBoard b) {
+    public void move(Point delta, ChessBoard b) {
 	pos.translate(delta.x, delta.y);
     }
     
