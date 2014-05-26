@@ -1,16 +1,28 @@
 import java.awt.Point;
 
 public class ChessBoard{
-    // Non-final fields are camelCase to distinguish var names from
-    // Class Names and CONSTANTS
+    public static final String DEFAULT_BOARD_INIT_STR[] = new String [] {
+	"Rblack","Nblack","Bblack","Qblack","Kblack","Bblack","Nblack","Rblack",
+	"Pblack","Pblack","Pblack","Pblack","Pblack","Pblack","Pblack","Pblack",
+	"","","","","","","","",
+	"","","","","","","","",
+	"","","","","","","","",
+	"","","","","","","","",
+	"Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite",
+	"Rwhite","Nwhite","Bwhite","Qwhite","Kwhite","Bwhite","Nwhite","Rwhite"
+    }; // caveat, we might want to initialize from a plaintext file.
+
     public Piece board[][];
     //public ChessMove Moves[] = new ChessMove[];
     private Point size;
     
-    public ChessBoard(Point isize) {
-	// constructor should follow fields and precede methods/functions.
+    public ChessBoard() {
+	this(new Point(8,8), DEFAULT_BOARD_INIT_STR);
+    }
+
+    public ChessBoard(Point isize, String initstr[]) {
         size = isize;
-        defaultReset();
+        reset(initstr);
     }        
 
     public boolean isEmpty(Point pos) {
@@ -112,23 +124,9 @@ public class ChessBoard{
         return 1;
     }
     
-    public void defaultReset() {
-        String dstring[] = new String [] {
-            "Rblack","Nblack","Bblack","Qblack","Kblack","Bblack","Nblack","Rblack",
-            "Pblack","Pblack","Pblack","Pblack","Pblack","Pblack","Pblack","Pblack",
-            "","","","","","","","",
-            "","","","","","","","",
-            "","","","","","","","",
-            "","","","","","","","",
-            "Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite",
-            "Rwhite","Nwhite","Bwhite","Qwhite","Kwhite","Bwhite","Nwhite","Rwhite"
-        };
-        reset(dstring);
-    }
-    
     public void displayBoard() {
 	char whiteSqr = 178; // '?'; //219
-	char blackSqr =  ' '; // (char) 32
+	char blackSqr = ' '; // (char) 32
 
         System.out.print(""+(char)201 + " ");
 	for (char file = 'a'; file <= 'h' ; file++) System.out.print(file);
