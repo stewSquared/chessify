@@ -125,39 +125,46 @@ public class ChessBoard{
     }
     
     public void displayBoard() {
+	System.out.print(this);
+    }
+
+    public String toString() {
+	String boardstr = "";
+	
 	char whiteSqr = 178; // '?'; //219
 	char blackSqr = ' '; // (char) 32
 
-        System.out.print(""+(char)201 + " ");
-	for (char file = 'a'; file <= 'h' ; file++) System.out.print(file);
-        System.out.print(" "+ (char)187+"\n\n");
+        boardstr += (""+(char)201 + " ");
+	for (char file = 'a'; file <= 'h' ; file++) boardstr += (file);
+        boardstr += (" "+ (char)187+"\n\n");
 	// carriage return is unnecessary with System.out.*
         
         for (int tx = 0; tx < size.x; tx++) {
 	    int rank = 8 - tx;
-            System.out.print("" + rank + " ");
-            
+            boardstr += ("" + rank + " ");
+
             for (int ty = 0; ty < size.y; ty++) {
-                
                 if (board[tx][ty]==null) {
-                    System.out.print((tx+ty)%2 == 0 ? whiteSqr : blackSqr);
+                    boardstr += ((tx+ty)%2 == 0 ? whiteSqr : blackSqr);
                 }
                 else{
                     String tm = board[tx][ty].getTeam();
                     if (tm.equals("white")) {
-                        System.out.print(board[tx][ty].toString());
+                        boardstr += (board[tx][ty].toString());
                     }
                     else{
-                        System.out.print((board[tx][ty].toString()).toLowerCase());
+                        boardstr += ((board[tx][ty].toString()).toLowerCase());
                     }
                 }
             }
-            System.out.print(" "+(9-(tx+1)));
-            System.out.println();
+            boardstr += " " + rank;
+            boardstr += "\n";
         }
-        System.out.println();
-        System.out.print(""+(char)200 + " ");
-	for (char file = 'a'; file <= 'h' ; file++) System.out.print(file);
-        System.out.print(" "+ (char)188+"\n\n");
+        boardstr += "\n";
+        boardstr += (""+(char)200 + " ");
+	for (char file = 'a'; file <= 'h' ; file++) boardstr += (file);
+        boardstr += (" "+ (char)188+"\n\n");
+
+	return boardstr;
     }
 }
