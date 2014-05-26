@@ -10,7 +10,7 @@ public class Queen extends Piece {
 		return "Q";
     }
 
-    public boolean legalMove(Point delta, ChessBoard b) {
+    public Boolean legalMove(Point delta, ChessBoard b) {
 		if (Math.abs(delta.x) != Math.abs(delta.y)
 			&& !(delta.x == 0 ^ delta.y == 0)) return false;
 

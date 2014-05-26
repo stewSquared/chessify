@@ -10,7 +10,7 @@ public class Bishop extends Piece {
 		return "B";
     }
 
-    public boolean legalMove(Point delta, ChessBoard b) {
+    public Boolean legalMove(Point delta, ChessBoard b) {
 		if (Math.abs(delta.x) != Math.abs(delta.y) ||
 			delta.equals(new Point(0,0))) return false;
 

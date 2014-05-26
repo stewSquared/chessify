@@ -10,7 +10,7 @@ public class King extends Piece {
 		return "K";
     }
 
-    public boolean legalMove(Point delta, ChessBoard b) {
+    public Boolean legalMove(Point delta, ChessBoard b) {
 		return Math.abs(delta.x) <= 1 &&
 			Math.abs(delta.y) <= 1 &&
 			!delta.equals(new Point(0,0));

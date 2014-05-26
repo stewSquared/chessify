@@ -10,7 +10,7 @@ public class Rook extends Piece {
 		return "R";
     }
 
-    public boolean legalMove(Point delta, ChessBoard b) {
+    public Boolean legalMove(Point delta, ChessBoard b) {
 		if (!(delta.x == 0 ^ delta.y == 0)) return false;
 
 		Point d = new Point();

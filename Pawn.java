@@ -10,7 +10,7 @@ public class Pawn extends Piece {
 		return ("P");
     }
 
-    public boolean legalMove(Point delta, ChessBoard b) {
+    public Boolean legalMove(Point delta, ChessBoard b) {
 		//if (badDirection) return false; //?? Commented out, assuming badDirection is a placeholder
 
 		Point tmp = new Point();
