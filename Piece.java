@@ -5,7 +5,7 @@ public abstract class Piece {
     protected Point pos;
     protected String team;
 
-    public abstract Boolean legalMove(Point delta, ChessBoard b);
+    public abstract boolean legalMove(Point delta, ChessBoard b);
     
     public abstract String toString();
     
@@ -32,7 +32,7 @@ public abstract class Piece {
     }
     
     // Are all the positions between this.pos and dest open?
-    public Boolean pathFree(Point delta, ChessBoard b) {
+    public boolean pathFree(Point delta, ChessBoard b) {
 	Point dir = new Point(Math.abs(delta.x)/delta.x,
 			      Math.abs(delta.y)/delta.y);
 	
