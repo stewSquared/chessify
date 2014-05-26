@@ -28,12 +28,7 @@ public abstract class Piece {
     }
     
     public Boolean move(Point delta, ChessBoard b) {
-	if (legalMove(delta,b)) {
-	    pos.translate(delta.x, delta.y);
-	    return true;
-	} else {
-	    return false;
-	}
+	pos.translate(delta.x, delta.y);
     }
     
     // Are all the positions between this.pos and dest open?
