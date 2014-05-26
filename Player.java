@@ -14,5 +14,9 @@ public abstract class Player {
 	this.name = name;
     }
 
+    public String toString() {
+	return name;
+    }
+
     public abstract ChessMove move(ChessBoard board);
 }

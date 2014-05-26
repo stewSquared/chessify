@@ -16,7 +16,7 @@ public class ChessMove{
 
 	this.orig = new Point(((int) (movestr.charAt(0) - 'a')),
 			      8 - Integer.parseInt(movestr.substring(1,2)));
-	this.orig = new Point(((int) (movestr.charAt(2) - 'a')),
+	this.dest = new Point(((int) (movestr.charAt(2) - 'a')),
 			      8 - Integer.parseInt(movestr.substring(3,4)));
 	this.movestr = movestr;
     }

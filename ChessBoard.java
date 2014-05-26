@@ -60,6 +60,11 @@ public class ChessBoard{
      *
      * Board's job: Check that the configuration is legal.
      *
+     *
+     * TODO - there is no check that the origPos is actually owned by the player
+     *
+     * proposal A: pass the team to the board when asking the board if a move is legal.
+     *
      */
     public boolean legalMove(Point pos, Point delta) {//dx/dy 
         if (!isEmpty(new Point(pos.x + delta.x, pos.y + delta.y))) {
@@ -80,7 +85,30 @@ public class ChessBoard{
 	// isn't this method just what legalMove should be?
 	return board[pos.x][pos.y].legalMove(delta, this) && legalMove(pos,delta);
     }
-    
+
+    // alternative to 'move' above. I don't actually think there
+    // should be a validation here. An assertion, maybe. To be
+    // discussed.
+    public boolean move(ChessMove m) {
+	boolean success = move(m.getOrig(), m.getDelta());
+	if (success) {
+	    place(getPiece(m.getOrig()), m.getDest());
+	    remove(m.getOrig());
+	}
+	return success;
+    }
+
+    // placeholder to allow compilation.
+    public boolean legalMove(ChessMove m) {return true;}
+
+    private void remove(Point pos) {
+	board[pos.x][pos.y] = null;
+    }
+
+    private void place(Piece pc, Point pos) {
+	board[pos.x][pos.y] = pc;
+    }
+
     public int reset(String initstr[]) {
         board = new Piece[size.x][size.y];
         if (initstr.length != size.x * size.y) {
