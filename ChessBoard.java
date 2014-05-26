@@ -1,36 +1,60 @@
 import java.awt.Point;
 
 public class ChessBoard{
-    public Piece Board[][];
+    // Non-final fields are camelCase to distinguish var names from
+    // Class Names and CONSTANTS
+    public Piece board[][];
     //public ChessMove Moves[] = new ChessMove[];
-    private Point Size;
+    private Point size;
     
+    public ChessBoard(Point isize) {
+	// constructor should follow fields and precede methods/functions.
+        size = isize;
+        defaultReset();
+    }        
+
     public boolean isEmpty(Point pos) {
-        return (Board[pos.x][pos.y]==null);
+        return (board[pos.x][pos.y]==null);
     }
 
     public boolean isInBounds(Point pos) {
-        return (pos.x > 0 && pos.y > 0 && pos.x < Size.x && pos.y < Size.y);
+        return (pos.x >= 0 && pos.y >= 0 && pos.x < size.x && pos.y < size.y);
     }
 
+    // What is this?
     public boolean inCheck(String cteam) {
         return false;
     }
 
     public Piece getPiece(Point pos) {
-        return Board[pos.x][pos.y];
+        return board[pos.x][pos.y];
     }
 
     public Piece getPiece(int tx, int ty) {
-        return Board[ty][ty];
+        return board[tx][ty];
     }
     
+    /**
+     * Return true if the resulting board is a legal configuration.
+     *
+     * Specifically, the destination is in bounds, and the King isn't
+     * placed in check.
+     *
+     * NOTE: this does not check for pieces eating their teammates. At
+     * present, nothing does, but it would make sense for that to be
+     * the piece's job:
+     *
+     * Piece's job: Check that the transition is legal.
+     *
+     * Board's job: Check that the configuration is legal.
+     *
+     */
     public boolean legalMove(Point pos, Point delta) {//dx/dy 
         if (!isEmpty(new Point(pos.x + delta.x, pos.y + delta.y))) {
             return false;
         }
         
-        String tstr = new String(Board[pos.x][pos.y].toString());
+        String tstr = "" + board[pos.x][pos.y];
         
         if (tstr.equals('K')) { //King='K' Knight='N' 
             System.out.println("DERP");
@@ -41,48 +65,46 @@ public class ChessBoard{
     
     //Again returns true if position is empty && the move is valid according to the piece
     public boolean move(Point pos, Point delta) {
-        if ((!Board[pos.x][pos.y].legalMove(delta,this))||(!legalMove(pos,delta))) {
-            return false; //Move is invalid.
-        }
-        return true;
+	// isn't this method just what legalMove should be?
+	return board[pos.x][pos.y].legalMove(delta, this) && legalMove(pos,delta);
     }
     
     public int reset(String initstr[]) {
-        Board = new Piece[Size.x][Size.y];
-        if (initstr.length != Size.x * Size.y) {
+        board = new Piece[size.x][size.y];
+        if (initstr.length != size.x * size.y) {
             return -1;
         }
         int curindex=0;
         for (String cur : initstr) {
-            int thex = curindex / Size.x;
-            int they = curindex % Size.x;
+            int thex = curindex / size.x;
+            int they = curindex % size.x;
 
             if (cur.length() == 0) {
-                Board[thex][they] = null;
+                board[thex][they] = null;
             } else {
                 String pc = cur.substring(0,1); //Type
                 String team = cur.substring(1,cur.length()); //Team
                 
                 if (pc.equals("P")) {
-                    Board[thex][they] = new Pawn(new Point(thex,they),team);
+                    board[thex][they] = new Pawn(new Point(thex,they),team);
                 }
                 else if (pc.equals("K")) {
-                    Board[thex][they] = new King(new Point(thex,they),team);
+                    board[thex][they] = new King(new Point(thex,they),team);
                 }
                 else if (pc.equals("Q")) {
-                    Board[thex][they] = new Queen(new Point(thex,they),team);
+                    board[thex][they] = new Queen(new Point(thex,they),team);
                 }
                 else if (pc.equals("N")) {
-                    Board[thex][they] = new Knight(new Point(thex,they),team);
+                    board[thex][they] = new Knight(new Point(thex,they),team);
                 }
                 else if (pc.equals("B")) {
-                    Board[thex][they] = new Bishop(new Point(thex,they),team);
+                    board[thex][they] = new Bishop(new Point(thex,they),team);
                 }
                 else if (pc.equals("R")) {
-                    Board[thex][they] = new Rook(new Point(thex,they),team);
+                    board[thex][they] = new Rook(new Point(thex,they),team);
                 }
                 else {
-                    Board[thex][they] = null;
+                    board[thex][they] = null;
                 }
             }
             curindex++;
@@ -104,55 +126,40 @@ public class ChessBoard{
         reset(dstring);
     }
     
-    public ChessBoard(Point isize) {
-        Size = isize;
-        defaultReset();
-    }        
-
     public void displayBoard() {
+	char whiteSqr = 178; // '?'; //219
+	char blackSqr =  ' '; // (char) 32
+
         System.out.print(""+(char)201 + " ");
-        for (int a = 0; a < Size.y; a++) {
-            char tbase = 'a';
-            tbase += a;
-            System.out.print(tbase);
-        }
+	for (char file = 'a'; file <= 'h' ; file++) System.out.print(file);
+        System.out.print(" "+ (char)187+"\n\n");
+	// carriage return is unnecessary with System.out.*
         
-        System.out.print(" "+ (char)187+"\r\n\r\n");
-        
-        for (int tx = 0; tx < Size.x; tx++) {
+        for (int tx = 0; tx < size.x; tx++) {
+	    int rank = 8 - tx;
+            System.out.print("" + rank + " ");
             
-            System.out.print(""+(9-(tx+1))+" ");
-            
-            for (int ty = 0; ty < Size.y; ty++) {
+            for (int ty = 0; ty < size.y; ty++) {
                 
-                if (Board[tx][ty]==null) {
-                    char c;
-                    if ((tx+ty)%2==0)
-                        c=178;//219
-                    else
-                        c=' ';
-                    System.out.print(c);
+                if (board[tx][ty]==null) {
+                    System.out.print((tx+ty)%2 == 0 ? whiteSqr : blackSqr);
                 }
                 else{
-                    String tm = Board[tx][ty].getTeam();
+                    String tm = board[tx][ty].getTeam();
                     if (tm.equals("white")) {
-                        System.out.print(Board[tx][ty].toString());
+                        System.out.print(board[tx][ty].toString());
                     }
                     else{
-                        System.out.print((Board[tx][ty].toString()).toLowerCase());
+                        System.out.print((board[tx][ty].toString()).toLowerCase());
                     }
                 }
             }
             System.out.print(" "+(9-(tx+1)));
-            System.out.print("\r\n");
+            System.out.println();
         }
-        System.out.print("\r\n");
+        System.out.println();
         System.out.print(""+(char)200 + " ");
-        for (int a = 0; a < Size.y; a++) {
-            char tbase = 'a';
-            tbase += a;
-            System.out.print(tbase);
-        }
-        System.out.print(" "+ (char)188+"\r\n\r\n");
+	for (char file = 'a'; file <= 'h' ; file++) System.out.print(file);
+        System.out.print(" "+ (char)188+"\n\n");
     }
 }
