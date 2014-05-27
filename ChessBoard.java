@@ -5,6 +5,16 @@ public class ChessBoard{
 	//public ChessMove Moves[] = new ChessMove[];
 	private Point Size;
 	
+	final String DefaultPositions[] = new String [] {
+		"Rblack"	,"Nblack"	,"Bblack"	,"Qblack"	,"Kblack"	,"Bblack"	,"Nblack"	,"Rblack",
+		"Pblack"	,"Pblack"	,"Pblack"	,"Pblack"	,"Pblack"	,"Pblack"	,"Pblack"	,"Pblack",
+		""			,""			,""			,""			,""			,""			,""			,"",	
+		""			,""			,""			,""			,""			,""			,""			,"",
+		""			,""			,""			,""			,""			,""			,""			,"",
+		""			,""			,""			,""			,""			,""			,""			,"",									
+		"Pwhite"	,"Pwhite"	,"Pwhite"	,"Pwhite"	,"Pwhite"	,"Pwhite"	,"Pwhite"	,"Pwhite",
+		"Rwhite"	,"Nwhite"	,"Bwhite"	,"Qwhite"	,"Kwhite"	,"Bwhite"	,"Nwhite"	,"Rwhite"};
+	
 	public boolean isEmpty(Point pos){
 		return (Board[pos.x][pos.y]==null);
 	}
@@ -39,7 +49,15 @@ public class ChessBoard{
 		
 	}
 	
-	//Again returns true if position is empty && the move is valid according to the piece
+	/**
+	Typically the cmd method will call this method, but it is allowable for the player
+	to directly call it, however this doesn't update the command history.
+	The order of operations is as follows:
+	1. Assure the destination is either blank, or an enemy.
+	2. Ask the origin piece if the move is valid according to its rules
+	3. Assert that the move will not place the team in check
+	4. Make the move, send updated check information about other team
+	**/
 	public boolean move(Point pos, Point delta){
 		if ((!Board[pos.x][pos.y].legalMove(delta,this))||(!legalMove(pos,delta))){
 			return false; //Move is invalid.
@@ -51,6 +69,23 @@ public class ChessBoard{
 		return true;
 	}
 	
+	/**
+	Player will call this method, it will return true if the command was both valid
+	and feasible. This method will handle things like concession and individual moves.
+	It requires Long Algebraic Notation by default. May implement ICCF notation.
+	**/
+	public boolean cmd(String cm){
+		return false;
+	}
+	
+	/**
+	This method resets the board to a specified set of pieces, in a String array. The
+	formatting should be as follows:
+	
+	[1 character indicating piece type (K,Q,N,B,R,P)][Team Name, for now white or black]
+	Eg. String board[8][8] = new String[8][8];
+	board[0][0]="Rblack" would me a black rook at the very top left position
+	**/
 	public int reset(String initstr[]){
 		Board = new Piece[Size.x][Size.y];
 		if (initstr.length!=Size.x*Size.y){
@@ -97,24 +132,22 @@ public class ChessBoard{
 		return 1;
 	}
 	
+	
 	public void defaultReset(){
-		String dstring[] = new String [] {	"Rblack","Nblack","Bblack","Qblack","Kblack","Bblack","Nblack","Rblack",
-											"Pblack","Pblack","Pblack","Pblack","Pblack","Pblack","Pblack","Pblack",
-											"","","","","","","","",	
-											"","","","","","","","",
-											"","","","","","","","",
-											"","","","","","","","",									
-											"Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite",
-											"Rwhite","Nwhite","Bwhite","Qwhite","Kwhite","Bwhite","Nwhite","Rwhite"
-									};
-		reset(dstring);
+		reset(DefaultPositions);
 	}
 	
 	
-	public ChessBoard(Point isize){
-		Size=isize;
+	public ChessBoard(){
+		Size=new Point(8,8);
 		defaultReset();
 	}	
+	
+	public ChessBoard(Point isize, String pcs[]){
+		Size=new Point(isize);
+		reset(pcs);
+	}	
+	
 	
 	public void displayBoard(){
 	

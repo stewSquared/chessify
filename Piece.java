@@ -33,8 +33,8 @@ public abstract class Piece {
     
     // Are all the positions between this.pos and dest open?
     public Boolean pathFree(Point delta, ChessBoard b) {
-	Point dir = new Point(Math.abs(delta.x)/delta.x,
-			      Math.abs(delta.y)/delta.y);
+	Point dir = new Point(Math.abs(delta.x)/delta.x, ///if delta.x or delta.y are zero, may have a divide by zero error
+			      Math.abs(delta.y)/delta.y);		 ///but genius implementation otherwise!
 	
 	Point path = new Point(pos);
 	path.translate(dir.x, dir.y);
