@@ -10,8 +10,8 @@ public class Rook extends Piece {
 	return "R";
     }
     
-    public Boolean legalMove(Point delta, ChessBoard b) {
-	Boolean perpendicular = (delta.x == 0 ^ delta.y == 0);
+    public boolean legalMove(Point delta, ChessBoard b) {
+	boolean perpendicular = (delta.x == 0 ^ delta.y == 0);
 	return perpendicular && this.pathFree(delta, b);
     }
 }

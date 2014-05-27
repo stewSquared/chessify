@@ -5,7 +5,7 @@ public abstract class Piece {
     protected Point pos;
     protected String team;
 
-    public abstract Boolean legalMove(Point delta, ChessBoard b);
+    public abstract boolean legalMove(Point delta, ChessBoard b);
     
     public abstract String toString();
     
