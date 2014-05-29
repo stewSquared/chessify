@@ -72,12 +72,12 @@ public class ChessBoard{
 		}
 	
         //Is the end position one of our team's pieces? (this is a substitute for a check for emptiness)
-		if (Board[pos.x+delta.x][pos.y+delta.y].getTeam() == Board[pos.x][pos.y].getTeam()) {
+		if (board[pos.x+delta.x][pos.y+delta.y].getTeam() == board[pos.x][pos.y].getTeam()) {
             return false;
         }
 		
 		//Is this move legal according to the piece?
-		if (!Board[pos.x][pos.y].legalMove(delta,this)){
+		if (!board[pos.x][pos.y].legalMove(delta,this)){
 			return false;
 		}
         
@@ -95,13 +95,9 @@ public class ChessBoard{
     // should be a validation here. An assertion, maybe. To be
     // discussed.
 	// Stephen: Good idea!
-    public boolean move(ChessMove m) {
-	boolean success = move(m.getOrig(), m.getDelta());
-	if (success) {
-	    place(getPiece(m.getOrig()), m.getDest());
-	    remove(m.getOrig());
-	}
-	return success;
+    public void move(ChessMove m) {
+	place(getPiece(m.getOrig()), m.getDest());
+	remove(m.getOrig());
     }
 
     // placeholder to allow compilation.
