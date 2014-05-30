@@ -3,23 +3,23 @@ import java.awt.Point;
 public class ChessBoard{
 
     public static final String DEFAULT_BOARD_INIT_STR[] = new String [] {
-	"Rblack","Nblack","Bblack","Qblack","Kblack","Bblack","Nblack","Rblack",
-	"Pblack","Pblack","Pblack","Pblack","Pblack","Pblack","Pblack","Pblack",
-	"","","","","","","","",
-	"","","","","","","","",
-	"","","","","","","","",
-	"","","","","","","","",
-	"Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite",
-	"Rwhite","Nwhite","Bwhite","Qwhite","Kwhite","Bwhite","Nwhite","Rwhite"
+        "Rblack","Nblack","Bblack","Qblack","Kblack","Bblack","Nblack","Rblack",
+        "Pblack","Pblack","Pblack","Pblack","Pblack","Pblack","Pblack","Pblack",
+        "","","","","","","","",
+        "","","","","","","","",
+        "","","","","","","","",
+        "","","","","","","","",
+        "Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite",
+        "Rwhite","Nwhite","Bwhite","Qwhite","Kwhite","Bwhite","Nwhite","Rwhite"
     }; // caveat, we might want to initialize from a plaintext file.
-	//Stephen: agreed! Not top priority though :D
+        //Stephen: agreed! Not top priority though :D
 
     public Piece board[][];
     //public ChessMove Moves[] = new ChessMove[];
     private Point size;
     
     public ChessBoard() {
-	this(new Point(8,8), DEFAULT_BOARD_INIT_STR);
+        this(new Point(8,8), DEFAULT_BOARD_INIT_STR);
     }
 
     public ChessBoard(Point isize, String initstr[]) {
@@ -64,53 +64,52 @@ public class ChessBoard{
      *
      */
     public boolean legalMove(Point pos, Point delta) {//dx/dy 
-		///Add Team Check Here
-		
-		//Are both positions within bounds?
-		if (!(inBounds(pos) && inBounds(new Point(pos.x+delta.x,pos.y+delta.y)))){
-			return false;
-		}
-	
-        //Is the end position one of our team's pieces? (this is a substitute for a check for emptiness)
-		if (board[pos.x+delta.x][pos.y+delta.y].getTeam() == board[pos.x][pos.y].getTeam()) {
+	///Add Team Check Here
+        
+	//Are both positions within bounds?
+	if (!(inBounds(pos) && inBounds(new Point(pos.x+delta.x,pos.y+delta.y)))){
+	    return false;
+	}
+        
+        //Is the end position one of our team's pieces? (this is a substitute
+        //for a check for emptiness)
+	if (board[pos.x+delta.x][pos.y+delta.y].getTeam() ==
+	    board[pos.x][pos.y].getTeam()) {
             return false;
         }
-		
-		//Is this move legal according to the piece?
-		if (!board[pos.x][pos.y].legalMove(delta,this)){
-			return false;
-		}
         
-		///Todo: temp move the board, and assure it will not place our team in check then unmove the pieces
-		///This must include pieces that would have been deleted, so instead of actually deleting any pieces
-		///store them temporarily
-		
-		
-		
+	//Is this move legal according to the piece?
+	if (!board[pos.x][pos.y].legalMove(delta,this)){
+	    return false;
+	}
         
+	///Todo: temp move the board, and assure it will not place our team in
+	///check then unmove the pieces. This must include pieces that would
+	///have been deleted, so instead of actually deleting any pieces store
+	///them temporarily
         return true;
     }
-
+    
     // alternative to 'move' above. I don't actually think there
     // should be a validation here. An assertion, maybe. To be
     // discussed.
-	// Stephen: Good idea!
+    // Stephen: Good idea!
     public void move(ChessMove m) {
-	place(getPiece(m.getOrig()), m.getDest());
-	remove(m.getOrig());
+        place(getPiece(m.getOrig()), m.getDest());
+        remove(m.getOrig());
     }
-
+    
     // placeholder to allow compilation.
     public boolean legalMove(ChessMove m) {return true;}
-
+    
     private void remove(Point pos) {
-	board[pos.x][pos.y] = null;
+        board[pos.x][pos.y] = null;
     }
-
+    
     private void place(Piece pc, Point pos) {
-	board[pos.x][pos.y] = pc;
+        board[pos.x][pos.y] = pc;
     }
-
+    
     public int reset(String initstr[]) {
         board = new Piece[size.x][size.y];
         if (initstr.length != size.x * size.y) {
@@ -120,7 +119,7 @@ public class ChessBoard{
         for (String cur : initstr) {
             int thex = curindex / size.x;
             int they = curindex % size.x;
-
+	    
             if (cur.length() == 0) {
                 board[thex][they] = null;
             } else {
@@ -155,23 +154,21 @@ public class ChessBoard{
     }
     
     public void displayBoard() {
-	System.out.print(this);
+        System.out.print(this);
     }
-
+    
     public String toString() {
-	String boardstr = "";
-	
-	char whiteSqr = 178; // '?'; //219
-	char blackSqr = ' '; // (char) 32
+        String boardstr = "";
+        
+        char whiteSqr = 178; // '?'; //219
+        char blackSqr = ' '; // (char) 32
 
         boardstr += (""+(char)201 + " ");
-	for (char file = 'a'; file <= 'h' ; file++) boardstr += (file);
+        for (char file = 'a'; file <= 'h' ; file++) boardstr += (file);
         boardstr += (" "+ (char)187+"\n\n");
-	// carriage return is unnecessary with System.out.* 
-	// Stephen :) kewl
-        
+	
         for (int tx = 0; tx < size.x; tx++) {
-	    int rank = 8 - tx;
+            int rank = 8 - tx;
             boardstr += ("" + rank + " ");
 
             for (int ty = 0; ty < size.y; ty++) {
@@ -193,9 +190,9 @@ public class ChessBoard{
         }
         boardstr += "\n";
         boardstr += (""+(char)200 + " ");
-	for (char file = 'a'; file <= 'h' ; file++) boardstr += (file);
+        for (char file = 'a'; file <= 'h' ; file++) boardstr += (file);
         boardstr += (" "+ (char)188+"\n\n");
 
-	return boardstr;
+        return boardstr;
     }
 }
