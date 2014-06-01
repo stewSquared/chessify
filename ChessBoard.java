@@ -27,20 +27,28 @@ public class ChessBoard{
         reset(initstr);
     }        
 
-    public boolean isEmpty(Point pos) {
-        return (board[pos.x][pos.y]==null);
-    }
-
-    public boolean inBounds(Point pos) {
-        return (pos.x >= 0 && pos.y >= 0 && pos.x < size.x && pos.y < size.y);
-    }
-
     public Piece getPiece(Point pos) {
         return board[pos.x][pos.y];
     }
 
     public Piece getPiece(int tx, int ty) {
         return board[tx][ty];
+    }
+    
+    public boolean isEmpty(Point pos) {
+        return (getPiece(pos)==null);
+    }
+
+    public boolean inBounds(Point pos) {
+        return (pos.x >= 0 && pos.y >= 0 && pos.x < size.x && pos.y < size.y);
+    }
+
+    private void remove(Point pos) {
+        board[pos.x][pos.y] = null;
+    }
+    
+    private void place(Piece pc, Point pos) {
+        board[pos.x][pos.y] = pc;
     }
     
     /**
@@ -53,61 +61,87 @@ public class ChessBoard{
      * present, nothing does, but it would make sense for that to be
      * the piece's job:
      *
-     * Piece's job: Check that the transition is legal.
+     * Piece's job: Check that the transition is legal:
+     * - No pieces block the pieces path (varies by piece, eg. knight).
+     * - No (presumably allied) pieces block the pieces destination.
      *
-     * Board's job: Check that the configuration is legal.
-     *
+     * Board's job: Check that the resulting configuration is legal.
+     * - The piece to be moved exists at the specified location.
+     * - The destination is whithin bounds.
+     * - The move doesn't put the team's king in check
      *
      * TODO - there is no check that the origPos is actually owned by the player
      *
      * proposal A: pass the team to the board when asking the board if a move is legal.
      *
+     * proposal B: the game controller should prevent a player from moving a
+     * piece that they don't own.
      */
-    public boolean legalMove(Point pos, Point delta) {//dx/dy 
+    public boolean legalMove(ChessMove m) {
+	Point orig = m.getOrig();
+	Point dest = m.getDest();
+	Point delta = m.getDelta();
+
 	///Add Team Check Here
+
+	// Does the piece even exist?
+	if (isEmpty(orig)) return false;
         
 	//Are both positions within bounds?
-	if (!(inBounds(pos) && inBounds(new Point(pos.x+delta.x,pos.y+delta.y)))){
-	    return false;
-	}
-        
+	if (!(inBounds(orig) && inBounds(dest))) return false;
+
         //Is the end position one of our team's pieces? (this is a substitute
         //for a check for emptiness)
-	if (board[pos.x+delta.x][pos.y+delta.y].getTeam() ==
-	    board[pos.x][pos.y].getTeam()) {
-            return false;
-        }
+
+	/* Stew: That's not really a great substitute check for emptiness,
+	 * because if the position is empty, null.getTeam() results in error.
+	 * Instead, I'll make it part of the pieces job to test that the
+	 * destination isn't blocked by a team-mate. This is consistent with the
+	 * pieces present behavior of checking that the pieces path isn't
+	 * blocked. */
         
 	//Is this move legal according to the piece?
-	if (!board[pos.x][pos.y].legalMove(delta,this)){
-	    return false;
-	}
+	if (!getPiece(orig).legalMove(delta, this)) return false;
         
 	///Todo: temp move the board, and assure it will not place our team in
 	///check then unmove the pieces. This must include pieces that would
 	///have been deleted, so instead of actually deleting any pieces store
 	///them temporarily
+
+	// Does the move put that piece's king in check?
+	Piece origPiece = getPiece(orig);
+	Piece destPiece = getPiece(dest);
+	move(m);
+	if (kingInCheck(origPiece.getTeam())) {
+	    place(origPiece, orig);
+	    place(destPiece, dest);
+	    return false;
+	}	
+
         return true;
     }
+
+    public boolean legalMove(Point pos, Point delta) {//dx/dy 
+	return legalMove(new ChessMove(pos, new Point(pos.x + delta.x,
+						      pos.y + delta.y)));
+    }
+
+    public boolean kingInCheck(String team) {
+	return false; // TODO
+    }
     
-    // alternative to 'move' above. I don't actually think there
-    // should be a validation here. An assertion, maybe. To be
-    // discussed.
-    // Stephen: Good idea!
+    /**
+     * Move a piece. This method allows for "illegal" moves, including ones that
+     * potentially cause runtime errors. 
+     */
     public void move(ChessMove m) {
         place(getPiece(m.getOrig()), m.getDest());
         remove(m.getOrig());
     }
-    
-    // placeholder to allow compilation.
-    public boolean legalMove(ChessMove m) {return true;}
-    
-    private void remove(Point pos) {
-        board[pos.x][pos.y] = null;
-    }
-    
-    private void place(Piece pc, Point pos) {
-        board[pos.x][pos.y] = pc;
+
+    public void move(Point pos, Point delta) {
+	move(new ChessMove(pos, new Point(pos.x + delta.x,
+					  pos.y + delta.y)));
     }
     
     public int reset(String initstr[]) {
