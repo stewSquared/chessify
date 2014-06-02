@@ -1,0 +1,7 @@
+Networking <- Stew
+GUI
+ICCF
+Game Logic:
+- Check for kings in check (BoardGame.moveRevealsCheck)
+- Checkmate
+- Player owns the piece they're trying to move
