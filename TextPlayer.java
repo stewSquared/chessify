@@ -20,8 +20,9 @@ public class TextPlayer extends Player {
 	System.out.print("Enter a move: ");
 	String m = commands.nextLine();
 	while(!ChessMove.validSmith(m)) {
-	    System.out.println("%s is not valid Smith Notation.".format(m));
+	    System.out.println(""+m+" is not valid Smith Notation.");
 	    System.out.print("Enter another move: ");
+	    m = commands.nextLine();
 	}
 	return new ChessMove(m);
     }

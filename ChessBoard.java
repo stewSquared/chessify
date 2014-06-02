@@ -109,14 +109,7 @@ public class ChessBoard{
 	///them temporarily
 
 	// Does the move put that piece's king in check?
-	Piece origPiece = getPiece(orig);
-	Piece destPiece = getPiece(dest);
-	move(m);
-	if (kingInCheck(origPiece.getTeam())) {
-	    place(origPiece, orig);
-	    place(destPiece, dest);
-	    return false;
-	}	
+	if (moveRevealsCheck(m)) return false;
 
         return true;
     }
@@ -126,8 +119,24 @@ public class ChessBoard{
 						      pos.y + delta.y)));
     }
 
-    public boolean kingInCheck(String team) {
-	return false; // TODO
+    /**
+     * pre: The piece indicated by move exists. This function is only
+     * expected to be called from legalMove.
+     *
+     * post: Return true if performing the move leaves that team's
+     * king in check.
+     */
+    private boolean moveRevealsCheck(ChessMove m) {
+	Piece origPiece = getPiece(m.getOrig());
+	Piece destPiece = getPiece(m.getDest());
+	boolean check = false;
+	move(m);
+	// TODO: loop logic to turn check true
+
+	// Restore board
+	place(origPiece, m.getOrig());
+	place(destPiece, m.getDest());
+	return check;
     }
     
     /**
@@ -151,8 +160,8 @@ public class ChessBoard{
         }
         int curindex=0;
         for (String cur : initstr) {
-            int thex = curindex / size.x;
-            int they = curindex % size.x;
+            int thex = curindex % size.x;
+            int they = curindex / size.y;
 	    
             if (cur.length() == 0) {
                 board[thex][they] = null;
@@ -197,15 +206,14 @@ public class ChessBoard{
         char whiteSqr = 178; // '?'; //219
         char blackSqr = ' '; // (char) 32
 
-        boardstr += (""+(char)201 + " ");
+        boardstr += ((char)201 + " ");
         for (char file = 'a'; file <= 'h' ; file++) boardstr += (file);
         boardstr += (" "+ (char)187+"\n\n");
 	
-        for (int tx = 0; tx < size.x; tx++) {
-            int rank = 8 - tx;
-            boardstr += ("" + rank + " ");
-
-            for (int ty = 0; ty < size.y; ty++) {
+        for (int ty = 0; ty < size.y; ty++) {
+            int rank = 8 - ty;
+            boardstr += (rank + " ");
+            for (int tx = 0; tx < size.x; tx++) {
                 if (board[tx][ty]==null) {
                     boardstr += ((tx+ty)%2 == 0 ? whiteSqr : blackSqr);
                 }
