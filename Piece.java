@@ -31,10 +31,14 @@ public abstract class Piece {
 	pos.translate(delta.x, delta.y);
     }
     
-    // Are all the positions between this.pos and dest open?
+    /** 
+     * pre: destination is on the same rank/file/diagonal line.
+     *
+     * post: return true if all spaces between this.pos and destination are open
+     */
     public Boolean pathFree(Point delta, ChessBoard b) {
-	Point dir = new Point(Math.abs(delta.x)/delta.x, ///if delta.x or delta.y are zero, may have a divide by zero error
-			      Math.abs(delta.y)/delta.y);		 ///but genius implementation otherwise!
+	Point dir = new Point(delta.x == 0 ? 0 : Math.abs(delta.x)/delta.x,
+			      delta.y == 0 ? 0 : Math.abs(delta.y)/delta.y);
 	
 	Point path = new Point(pos);
 	path.translate(dir.x, dir.y);

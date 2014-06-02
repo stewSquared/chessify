@@ -11,23 +11,19 @@ public class Pawn extends Piece {
     }
 
     public boolean legalMove(Point delta, ChessBoard b) {
-		//if (badDirection) return false; //?? Commented out, assuming badDirection is a placeholder
+	
+	boolean badDirection =
+	    (team == "white" && delta.y >= 0)
+	      || (team == "black" && delta.y <= 0);
 
-		Point tmp = new Point();
-		tmp = pos;
-		tmp.translate(delta.x,delta.y);
-		boolean emptyTarget = b.isEmpty(tmp);
-		int dist = Math.abs(delta.y);
-		if (dist == 1) {
-			return (emptyTarget ? delta.x == 0 : Math.abs(delta.x) == 1);
-		} else {
-			Point path = new Point();
-			path=pos;
-			path.translate(0, delta.y / Math.abs(delta.y));
-			return (dist == 2
-			&& delta.x == 0
-			&& emptyTarget
-			&& b.isEmpty(path));
-		}
+	if (badDirection) {System.out.println(delta); return false;}
+	    
+	Point target = new Point(pos.x + delta.x,
+				 pos.y + delta.y);
+
+	return (delta.x == 0) ? // straight move?
+	    b.isEmpty(target) && pathFree(delta, b) :
+	    (Math.abs(delta.x) == 1 && Math.abs(delta.y) == 1) ? // diagonal move?
+	    !b.isEmpty(target) : false;
     }
 }
