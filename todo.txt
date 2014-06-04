@@ -7,4 +7,4 @@ Game Logic:
 - Player owns the piece they're trying to move
 - en passant <- Stew
 - castling 
-- pawns can move two spaces forward on more than one ocassion <- Stew
+
