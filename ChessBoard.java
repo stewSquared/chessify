@@ -130,12 +130,12 @@ public class ChessBoard{
 	Piece origPiece = getPiece(m.getOrig());
 	Piece destPiece = getPiece(m.getDest());
 	boolean check = false;
-	move(m);
+	/*move(m);
 	// TODO: loop logic to turn check true
 
 	// Restore board
 	place(origPiece, m.getOrig());
-	place(destPiece, m.getDest());
+	place(destPiece, m.getDest());*/
 	return check;
     }
     
@@ -144,6 +144,7 @@ public class ChessBoard{
      * potentially cause runtime errors. 
      */
     public void move(ChessMove m) {
+	getPiece(m.getOrig()).move(m.getDelta(), this);
         place(getPiece(m.getOrig()), m.getDest());
         remove(m.getOrig());
     }
