@@ -1,18 +1,22 @@
 import java.awt.Point;
 
-public class Bishop extends Piece {
+public class Bishop extends ChessPiece {
     
-    public Bishop(Point inpos, String inteam){
-        super(inpos,inteam);
-    }
+    public Bishop(String team) { super(team); }
     
-    public String toString() {
-        return "B";
-    }
+    public Bishop(String team, ChessPiece parent) { super(team, parent); }
 
-    public boolean legalMove(Point delta, ChessBoard b) {
-        boolean diagonal = Math.abs(delta.x) == Math.abs(delta.y) &&
-            !delta.equals(new Point(0,0));
-        return diagonal && this.pathFree(delta, b);
+    public String toString() { return "B"; }
+
+    public ChessPiece move() { return new Bishop(team, this); }
+    
+    public boolean legalMove(ChessMove m, ChessBoard board) {
+	int dx = m.getDelta().x;
+	int dy = m.getDelta().y;
+
+        boolean diagonal = Math.abs(dx) == Math.abs(dy);
+	return super.legalMove(m, board)
+	    && diagonal
+	    && m.pathFree(board);
     }
 }

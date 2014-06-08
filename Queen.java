@@ -1,20 +1,23 @@
 import java.awt.Point;
 
-public class Queen extends Piece {
+public class Queen extends ChessPiece {
 
-    public Queen(Point inpos, String inteam){
-	super(inpos,inteam);
-    }
+    public Queen(String team) { super(team); }
     
-    public String toString() {
-	return "Q";
-    }
+    public Queen(String team, ChessPiece parent) { super(team, parent); }
+    
+    public String toString() { return "Q"; }
 
-    public boolean legalMove(Point delta, ChessBoard b) {
-	boolean diagonal = Math.abs(delta.x) == Math.abs(delta.y) &&
-	    !delta.equals(new Point(0,0));
-	boolean perpendicular = (delta.x == 0 ^ delta.y == 0);
-	
-	return (diagonal || perpendicular) && this.pathFree(delta, b);
+    public ChessPiece move() { return new Queen(team, this); }
+    
+    public boolean legalMove(ChessMove m, ChessBoard board) {
+	int dx = m.getDelta().x;
+	int dy = m.getDelta().y;
+
+        boolean diagonal = Math.abs(dx) == Math.abs(dy);
+	boolean perpendicular = (dx == 0 ^ dy == 0);
+	return super.legalMove(m, board)
+	    && (diagonal ^ perpendicular)
+	    && m.pathFree(board);
     }
 }

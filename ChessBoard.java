@@ -14,7 +14,7 @@ public class ChessBoard{
     }; // caveat, we might want to initialize from a plaintext file.
         //Stephen: agreed! Not top priority though :D
 
-    public Piece board[][];
+    public ChessPiece board[][];
     //public ChessMove Moves[] = new ChessMove[];
     private Point size;
     
@@ -27,11 +27,11 @@ public class ChessBoard{
         reset(initstr);
     }        
 
-    public Piece getPiece(Point pos) {
+    public ChessPiece getPiece(Point pos) {
         return board[pos.x][pos.y];
     }
 
-    public Piece getPiece(int tx, int ty) {
+    public ChessPiece getPiece(int tx, int ty) {
         return board[tx][ty];
     }
     
@@ -47,7 +47,7 @@ public class ChessBoard{
         board[pos.x][pos.y] = null;
     }
     
-    private void place(Piece pc, Point pos) {
+    private void place(ChessPiece pc, Point pos) {
         board[pos.x][pos.y] = pc;
     }
     
@@ -62,8 +62,8 @@ public class ChessBoard{
      * the piece's job:
      *
      * Piece's job: Check that the transition is legal:
-     * - No pieces block the pieces path (varies by piece, eg. knight).
-     * - No (presumably allied) pieces block the pieces destination.
+     * - No pieces block the piece's path (varies by piece, eg. knight).
+     * - No (presumably allied) piece's block the pieces destination.
      *
      * Board's job: Check that the resulting configuration is legal.
      * - The piece to be moved exists at the specified location.
@@ -82,41 +82,19 @@ public class ChessBoard{
 	Point dest = m.getDest();
 	Point delta = m.getDelta();
 
-	///Add Team Check Here
-
 	// Does the piece even exist?
 	if (isEmpty(orig)) return false;
         
 	//Are both positions within bounds?
 	if (!(inBounds(orig) && inBounds(dest))) return false;
 
-        //Is the end position one of our team's pieces? (this is a substitute
-        //for a check for emptiness)
-
-	/* Stew: That's not really a great substitute check for emptiness,
-	 * because if the position is empty, null.getTeam() results in error.
-	 * Instead, I'll make it part of the pieces job to test that the
-	 * destination isn't blocked by a team-mate. This is consistent with the
-	 * pieces present behavior of checking that the pieces path isn't
-	 * blocked. */
-        
 	//Is this move legal according to the piece?
-	if (!getPiece(orig).legalMove(delta, this)) return false;
+	if (!getPiece(orig).legalMove(m, this)) return false;
         
-	///Todo: temp move the board, and assure it will not place our team in
-	///check then unmove the pieces. This must include pieces that would
-	///have been deleted, so instead of actually deleting any pieces store
-	///them temporarily
-
 	// Does the move put that piece's king in check?
 	if (moveRevealsCheck(m)) return false;
 
         return true;
-    }
-
-    public boolean legalMove(Point pos, Point delta) {//dx/dy 
-	return legalMove(new ChessMove(pos, new Point(pos.x + delta.x,
-						      pos.y + delta.y)));
     }
 
     /**
@@ -127,8 +105,8 @@ public class ChessBoard{
      * king in check.
      */
     private boolean moveRevealsCheck(ChessMove m) {
-	Piece origPiece = getPiece(m.getOrig());
-	Piece destPiece = getPiece(m.getDest());
+	ChessPiece origPiece = getPiece(m.getOrig());
+	ChessPiece destPiece = getPiece(m.getDest());
 	boolean check = false;
 	/*move(m);
 	// TODO: loop logic to turn check true
@@ -144,52 +122,47 @@ public class ChessBoard{
      * potentially cause runtime errors. 
      */
     public void move(ChessMove m) {
-	getPiece(m.getOrig()).move(m.getDelta(), this);
-        place(getPiece(m.getOrig()), m.getDest());
+        place(getPiece(m.getOrig()),
+	      m.getDest());
         remove(m.getOrig());
     }
 
-    public void move(Point pos, Point delta) {
-	move(new ChessMove(pos, new Point(pos.x + delta.x,
-					  pos.y + delta.y)));
-    }
-    
     public int reset(String initstr[]) {
-        board = new Piece[size.x][size.y];
+        board = new ChessPiece[size.x][size.y];
         if (initstr.length != size.x * size.y) {
             return -1;
         }
         int curindex=0;
         for (String cur : initstr) {
-            int thex = curindex % size.x;
-            int they = curindex / size.y;
-	    
+	    Point pos = new Point(curindex % size.x,
+				  curindex / size.y);
+
             if (cur.length() == 0) {
-                board[thex][they] = null;
+		place(null, pos);
             } else {
                 String pc = cur.substring(0,1); //Type
                 String team = cur.substring(1,cur.length()); //Team
                 
                 if (pc.equals("P")) {
-                    board[thex][they] = new Pawn(new Point(thex,they),team);
+                    place(new Pawn(team), pos);
                 }
                 else if (pc.equals("K")) {
-                    board[thex][they] = new King(new Point(thex,they),team);
+		    place(new King(team), pos);
                 }
                 else if (pc.equals("Q")) {
-                    board[thex][they] = new Queen(new Point(thex,they),team);
+                    place(new Queen(team), pos);
                 }
                 else if (pc.equals("N")) {
-                    board[thex][they] = new Knight(new Point(thex,they),team);
+                    place(new Knight(team), pos);
                 }
                 else if (pc.equals("B")) {
-                    board[thex][they] = new Bishop(new Point(thex,they),team);
+                    place(new Bishop(team), pos);
                 }
                 else if (pc.equals("R")) {
-                    board[thex][they] = new Rook(new Point(thex,they),team);
+                    place(new Rook(team), pos);
                 }
                 else {
-                    board[thex][they] = null;
+                    place(null, pos);
                 }
             }
             curindex++;
@@ -219,7 +192,7 @@ public class ChessBoard{
                     boardstr += ((tx+ty)%2 == 0 ? whiteSqr : blackSqr);
                 }
                 else{
-                    String tm = board[tx][ty].getTeam();
+                    String tm = board[tx][ty].team;
                     if (tm.equals("white")) {
                         boardstr += (board[tx][ty].toString());
                     }
@@ -239,3 +212,4 @@ public class ChessBoard{
         return boardstr;
     }
 }
+

@@ -1,41 +1,49 @@
 import java.awt.Point;
 
-public class Pawn extends Piece {
+public class Pawn extends ChessPiece {
 
-    private boolean moved;
-    
-    public Pawn(Point inpos, String inteam){
-	super(inpos,inteam);
-	this.moved = false;
-    }
-    
-    public String toString() {
-	return ("P");
+    final public boolean isPassing;
+
+    public Pawn(String team) { this(team, null, false); }
+
+    public Pawn(String team, ChessPiece parent) {
+	this(team, parent, false);
     }
 
-    public void move(Point delta, ChessBoard b) {
-	super.move(delta, b);
-	this.moved = true;
+    private Pawn(String team, ChessPiece parent, boolean isPassing) {
+	super(team, parent);
+	this.isPassing = isPassing;
     }
-    
-    public boolean legalMove(Point delta, ChessBoard b) {
+
+    public String toString() { return "P"; }
+
+    public ChessPiece move() {
+	return new Pawn(team, this, false);
+    }
+
+    public Pawn pass() {
+	return new Pawn(team, this, true);
+    }
+
+    public boolean legalMove(ChessMove m, ChessBoard board) {
+	int dx = m.getDelta().x;
+	int dy = m.getDelta().y;
 	
         boolean badDirection =
-            (team == "white" && delta.y >= 0)
-	    || (team == "black" && delta.y <= 0);
+            (team == "white" && dy >= 0)
+	    || (team == "black" && dy <= 0);
 	
-        if (badDirection) {System.out.println(delta); return false;}
+        if (badDirection) return false;
         
-        Point target = new Point(pos.x + delta.x,
-                                 pos.y + delta.y);
 	
-	if (delta.x == 0) { // straight?
-            return b.isEmpty(target) && pathFree(delta, b)
-		&& !((Math.abs(delta.y) == 2) && moved);
-	} else if (Math.abs(delta.x) == 1 && Math.abs(delta.y) == 1) { // diagonal?
-            return !b.isEmpty(target);
+	if (dx == 0) { // straight?
+            return board.isEmpty(m.getDest()) && m.pathFree(board)
+		&& !((Math.abs(dy) == 2) && moved());
+	} else if (Math.abs(dx) == 1 && Math.abs(dy) == 1) { // diagonal?
+            return !board.isEmpty(m.getDest());
 	} else {
 	    return false;
+
 	}
     }
 }

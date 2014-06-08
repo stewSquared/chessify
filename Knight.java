@@ -1,18 +1,21 @@
 import java.awt.Point;
 
-public class Knight extends Piece {
+public class Knight extends ChessPiece {
     
-    public Knight(Point inpos, String inteam){
-	super(inpos,inteam);
-    }
+    public Knight(String team) { super(team); }
     
-    public String toString() {
-	return "N";
-    }
+    public Knight(String team, ChessPiece parent) { super(team, parent); }
+
+    public String toString() { return "N"; }
     
-    public boolean legalMove(Point delta, ChessBoard b) {
-	return ((Math.abs(delta.x) + Math.abs(delta.y) == 3) &&
-		((Math.abs(delta.x) == 1) ^ (Math.abs(delta.y) == 1)) &&
-		(!delta.equals(new Point(0,0))));
+    public ChessPiece move() { return new Knight(team, this); }
+    
+    public boolean legalMove(ChessMove m, ChessBoard board) {
+	int dx = m.getDelta().x;
+	int dy = m.getDelta().y;
+
+	return super.legalMove(m, board)
+	    && Math.abs(dx) + Math.abs(dy) == 3
+	    && (Math.abs(dx) == 1) ^ (Math.abs(dy) == 1);
     }
 }
