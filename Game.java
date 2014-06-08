@@ -12,7 +12,8 @@ public class Game {
 
 	while (true) {// while (!board.checkMate()) {
 	    Player player = whiteTurn ? white : black;
-	    System.out.println("" + player + " to go:\n" + board );
+	    System.out.println("" + player + " to go:");
+	    System.out.println("\n"+board+"\n");
 
 	    ChessMove m = white.move(board);
 	    // TODO The problem here is the `legalMove` doesn't do a

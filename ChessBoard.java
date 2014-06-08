@@ -46,7 +46,7 @@ public class ChessBoard{
     private void remove(Point pos) {
         board[pos.x][pos.y] = null;
     }
-    
+
     private void place(ChessPiece pc, Point pos) {
         board[pos.x][pos.y] = pc;
     }
@@ -177,39 +177,52 @@ public class ChessBoard{
     public String toString() {
         String boardstr = "";
         
-        char whiteSqr = 178; // '?'; //219
-        char blackSqr = ' '; // (char) 32
+	String whiteSqr = " .";
+        String blackSqr = " ,";
 
-        boardstr += ((char)201 + " ");
-        for (char file = 'a'; file <= 'h' ; file++) boardstr += (file);
-        boardstr += (" "+ (char)187+"\n\n");
+        boardstr += (" X"+"  ");
+        for (char file = 'a'; file < 'a'+size.x ; file++) boardstr += (" "+file);
+        boardstr += ("  "+" X");
+	boardstr += '\n';
+
+	boardstr += ("  "+" +");
+	for (int i = 0; i < size.x; i++) boardstr += ("--");
+	boardstr += ("-+"+"  ");
+	boardstr += '\n';
 	
         for (int ty = 0; ty < size.y; ty++) {
-            int rank = 8 - ty;
-            boardstr += (rank + " ");
+            int rank = size.y - ty;
+
+            boardstr += (" "+rank + " |");
+
             for (int tx = 0; tx < size.x; tx++) {
-                if (board[tx][ty]==null) {
-                    boardstr += ((tx+ty)%2 == 0 ? whiteSqr : blackSqr);
-                }
-                else{
-                    String tm = board[tx][ty].team;
-                    if (tm.equals("white")) {
-                        boardstr += (board[tx][ty].toString());
+                if (getPiece(tx, ty) == null) {
+                    boardstr += ((tx + ty)%2 == 0 ? whiteSqr : blackSqr);
+                } else {
+		    String piece;
+                    if (getPiece(tx, ty).team == "white") {
+                        piece = (getPiece(tx,ty).toString());
+                    } else {
+                        piece = ((getPiece(tx, ty).toString()).toLowerCase());
                     }
-                    else{
-                        boardstr += ((board[tx][ty].toString()).toLowerCase());
-                    }
+		    boardstr += (" " + piece);
                 }
             }
-            boardstr += " " + rank;
-            boardstr += "\n";
-        }
-        boardstr += "\n";
-        boardstr += (""+(char)200 + " ");
-        for (char file = 'a'; file <= 'h' ; file++) boardstr += (file);
-        boardstr += (" "+ (char)188+"\n\n");
 
-        return boardstr;
+            boardstr += (" |" + " "+rank);
+	    boardstr += '\n';
+        }
+
+	boardstr += ("  "+" +");
+	for (int i = 0; i < size.x; i++) boardstr += ("--");
+	boardstr += ("-+"+"  ");
+	boardstr += '\n';
+	
+        boardstr += (" X"+"  ");
+        for (char file = 'a'; file < 'a'+size.x ; file++) boardstr += (" "+file);
+        boardstr += ("  "+" X");
+
+	return boardstr;
     }
 }
 
