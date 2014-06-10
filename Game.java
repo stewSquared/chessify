@@ -16,11 +16,7 @@ public class Game {
 	    System.out.println("\n"+board+"\n");
 
 	    ChessMove m = white.move(board);
-	    // TODO The problem here is the `legalMove` doesn't do a
-	    // complete check. `move` does, but it also moves the
-	    // piece. For now, I'll write the code I'd like to write
-	    // for Game. We can resolve the API's later.
-	    while(!board.legalMove(m)) { // pass team too
+	    while(!board.legalMove(m, player.toString())) {
 		System.out.println(""+m+" is not a legal move for "+player);
 		m = player.move(board);
 	    }

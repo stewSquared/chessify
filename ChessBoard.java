@@ -93,43 +93,20 @@ public class ChessBoard{
         board[pos.x][pos.y] = pc;
     }
     
-    /**
-     * Return true if the resulting board is a legal configuration.
-     *
-     * Specifically, the destination is in bounds, and the King isn't
-     * placed in check.
-     *
-     * NOTE: this does not check for pieces eating their teammates. At
-     * present, nothing does, but it would make sense for that to be
-     * the piece's job:
-     *
-     * Piece's job: Check that the transition is legal:
-     * - No pieces block the piece's path (varies by piece, eg. knight).
-     * - No (presumably allied) piece's block the pieces destination.
-     *
-     * Board's job: Check that the resulting configuration is legal.
-     * - The piece to be moved exists at the specified location.
-     * - The destination is whithin bounds.
-     * - The move doesn't put the team's king in check
-     *
-     * TODO - there is no check that the origPos is actually owned by the player
-     *
-     * proposal A: pass the team to the board when asking the board if a move is legal.
-     *
-     * proposal B: the game controller should prevent a player from moving a
-     * piece that they don't own.
-     */
-    public boolean legalMove(ChessMove m) {
+    public boolean legalMove(ChessMove m, String team) {
 	Point orig = m.getOrig();
 	Point dest = m.getDest();
 	Point delta = m.getDelta();
 
 	// Does the piece even exist?
 	if (isEmpty(orig)) return false;
-        
+
 	//Are both positions within bounds?
 	if (!(inBounds(orig) && inBounds(dest))) return false;
 
+	// Does the piece belong to the player trying to move it?
+	if ((team != null) && !getPiece(orig).team.equals(team)) return false;
+        
 	//Is this move legal according to the piece?
 	if (!getPiece(orig).legalMove(m, this)) return false;
         
@@ -137,6 +114,10 @@ public class ChessBoard{
 	if (moveRevealsCheck(m)) return false;
 
         return true;
+    }
+
+    public boolean legalMove(ChessMove m) {
+	return legalMove(m, null);
     }
 
     /**
@@ -159,10 +140,6 @@ public class ChessBoard{
     /**
      * Return the chessboard that would result from a given move.
      */
-    public ChessBoard move(Point orig, Point dest) {
-	return move(new ChessMove(orig, dest));
-    }
-
     public ChessBoard move(ChessMove m) {
 	Point orig = m.getOrig();
 	Point dest = m.getDest();
@@ -197,6 +174,10 @@ public class ChessBoard{
 	} else {
 	    return new ChessBoard(size, newBoard);
 	}
+    }
+
+    private ChessBoard move(Point orig, Point dest) {
+	return move(new ChessMove(orig, dest));
     }
 
     public void displayBoard() {

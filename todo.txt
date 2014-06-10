@@ -2,9 +2,10 @@
 [ ]GUI
 [ ]ICCF
 [ ]Game Logic:
-- [ ]Check for kings in check (BoardGame.moveRevealsCheck)
+- [ ]Check for kings in check (BoardGame.moveRevealsCheck) <- Stew
 - [ ]Checkmate
-- [ ]Player owns the piece they're trying to move <- Stew
+- [X]Player owns the piece they're trying to move <- Stew
 - [X]en passant <- Stew
 - [X]castling <- Stew
+- [ ]Pawn promotions
 
