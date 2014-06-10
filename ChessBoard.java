@@ -11,21 +11,63 @@ public class ChessBoard{
         "","","","","","","","",
         "Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite","Pwhite",
         "Rwhite","Nwhite","Bwhite","Qwhite","Kwhite","Bwhite","Nwhite","Rwhite"
-    }; // caveat, we might want to initialize from a plaintext file.
-        //Stephen: agreed! Not top priority though :D
+    };
 
-    public ChessPiece board[][];
-    //public ChessMove Moves[] = new ChessMove[];
-    private Point size;
-    
+    public final ChessPiece[][] board;
+    private final Point size;
+
     public ChessBoard() {
         this(new Point(8,8), DEFAULT_BOARD_INIT_STR);
     }
 
-    public ChessBoard(Point isize, String initstr[]) {
-        size = isize;
-        reset(initstr);
-    }        
+    public ChessBoard(Point size, ChessPiece[][] board) {
+	this.size = size;
+	this.board = board;
+    }
+
+    public ChessBoard(Point size, String initstr[]) {
+	this.size = size;
+        if (initstr.length != size.x * size.y) {
+	    throw new IllegalArgumentException(""+initstr+" is not size "+size);
+        }
+	board = new ChessPiece[size.x][size.y];
+
+        int curindex=0;
+        for (String cur : initstr) {
+	    Point pos = new Point(curindex % size.x,
+				  curindex / size.y);
+
+            if (cur.length() == 0) {
+		place(null, pos);
+            } else {
+                String pc = cur.substring(0,1); //Type
+                String team = cur.substring(1,cur.length()); //Team
+                
+                if (pc.equals("P")) {
+                    place(new Pawn(team), pos);
+                }
+                else if (pc.equals("K")) {
+		    place(new King(team), pos);
+                }
+                else if (pc.equals("Q")) {
+                    place(new Queen(team), pos);
+                }
+                else if (pc.equals("N")) {
+                    place(new Knight(team), pos);
+                }
+                else if (pc.equals("B")) {
+                    place(new Bishop(team), pos);
+                }
+                else if (pc.equals("R")) {
+                    place(new Rook(team), pos);
+                }
+                else {
+                    place(null, pos);
+                }
+            }
+            curindex++;
+        }
+    }
 
     public ChessPiece getPiece(Point pos) {
         return board[pos.x][pos.y];
@@ -105,71 +147,45 @@ public class ChessBoard{
      * king in check.
      */
     private boolean moveRevealsCheck(ChessMove m) {
-	ChessPiece origPiece = getPiece(m.getOrig());
-	ChessPiece destPiece = getPiece(m.getDest());
-	boolean check = false;
-	/*move(m);
-	// TODO: loop logic to turn check true
-
-	// Restore board
-	place(origPiece, m.getOrig());
-	place(destPiece, m.getDest());*/
-	return check;
+	// TODO
+	return false;
     }
     
     /**
-     * Move a piece. This method allows for "illegal" moves, including ones that
-     * potentially cause runtime errors. 
+     * Return the chessboard that would result from a given move.
      */
-    public void move(ChessMove m) {
-        place(getPiece(m.getOrig()),
-	      m.getDest());
-        remove(m.getOrig());
+    public ChessBoard move(ChessMove m) {
+	ChessPiece[][] newBoard = new ChessPiece[size.x][size.y];
+
+	for (int x = 0; x < size.x; x++) {
+	    for (int y = 0; y < size.y; y++) {
+		newBoard[x][y] = board[x][y];
+	    }
+	}
+
+	ChessPiece pc = getPiece(m.getOrig());
+	newBoard[m.getOrig().x][m.getOrig().y] = null;
+	newBoard[m.getDest().x][m.getDest().y] = pc.move();
+
+	boolean pawnPassing = (getPiece(m.getOrig()).toString().equals("P")
+			       && Math.abs(m.getDelta().y) == 2);
+
+	if (pawnPassing) {
+	    Point passingSquare = new Point(m.getDest().x,
+					    (m.getDest().y + m.getOrig().y)/2);
+	    return new PassedBoard(size,
+				   newBoard,
+				   move(m.getOrig(), passingSquare));
+	} else {
+	    return new ChessBoard(size, newBoard);
+	}
     }
 
-    public int reset(String initstr[]) {
-        board = new ChessPiece[size.x][size.y];
-        if (initstr.length != size.x * size.y) {
-            return -1;
-        }
-        int curindex=0;
-        for (String cur : initstr) {
-	    Point pos = new Point(curindex % size.x,
-				  curindex / size.y);
-
-            if (cur.length() == 0) {
-		place(null, pos);
-            } else {
-                String pc = cur.substring(0,1); //Type
-                String team = cur.substring(1,cur.length()); //Team
-                
-                if (pc.equals("P")) {
-                    place(new Pawn(team), pos);
-                }
-                else if (pc.equals("K")) {
-		    place(new King(team), pos);
-                }
-                else if (pc.equals("Q")) {
-                    place(new Queen(team), pos);
-                }
-                else if (pc.equals("N")) {
-                    place(new Knight(team), pos);
-                }
-                else if (pc.equals("B")) {
-                    place(new Bishop(team), pos);
-                }
-                else if (pc.equals("R")) {
-                    place(new Rook(team), pos);
-                }
-                else {
-                    place(null, pos);
-                }
-            }
-            curindex++;
-        }
-        return 1;
+    public ChessBoard move(Point orig, Point dest) {
+	return move(new ChessMove(orig, dest));
     }
     
+
     public void displayBoard() {
         System.out.print(this);
     }
@@ -200,7 +216,7 @@ public class ChessBoard{
                     boardstr += ((tx + ty)%2 == 0 ? whiteSqr : blackSqr);
                 } else {
 		    String piece;
-                    if (getPiece(tx, ty).team == "white") {
+                    if (getPiece(tx, ty).team.equals("white")) {
                         piece = (getPiece(tx,ty).toString());
                     } else {
                         piece = ((getPiece(tx, ty).toString()).toLowerCase());

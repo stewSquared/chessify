@@ -24,7 +24,7 @@ public class Game {
 		System.out.println(""+m+" is not a legal move for "+player);
 		m = player.move(board);
 	    }
-	    board.move(m);
+	    board = board.move(m);
 	    whiteTurn = ! whiteTurn;
 	}
     }
