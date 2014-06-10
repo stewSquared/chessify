@@ -1,10 +1,10 @@
-Networking <- Stew
-GUI
-ICCF
-Game Logic:
-- Check for kings in check (BoardGame.moveRevealsCheck)
-- Checkmate
-- Player owns the piece they're trying to move
-- en passant <- Stew
-- castling 
+[ ]Networking <- Stew
+[ ]GUI
+[ ]ICCF
+[ ]Game Logic:
+- [ ]Check for kings in check (BoardGame.moveRevealsCheck)
+- [ ]Checkmate
+- [ ]Player owns the piece they're trying to move <- Stew
+- [X]en passant <- Stew
+- [X]castling <- Stew
 

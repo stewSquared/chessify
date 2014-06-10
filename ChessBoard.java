@@ -14,7 +14,7 @@ public class ChessBoard{
     };
 
     public final ChessPiece[][] board;
-    private final Point size;
+    public final Point size;
 
     public ChessBoard() {
         this(new Point(8,8), DEFAULT_BOARD_INIT_STR);
@@ -147,6 +147,11 @@ public class ChessBoard{
      * king in check.
      */
     private boolean moveRevealsCheck(ChessMove m) {
+	return false;//move(m).kingInCheck(getPiece(m.getOrig()).team);
+	
+    }
+
+    public boolean kingInCheck(String team) {
 	// TODO
 	return false;
     }
@@ -154,7 +159,14 @@ public class ChessBoard{
     /**
      * Return the chessboard that would result from a given move.
      */
+    public ChessBoard move(Point orig, Point dest) {
+	return move(new ChessMove(orig, dest));
+    }
+
     public ChessBoard move(ChessMove m) {
+	Point orig = m.getOrig();
+	Point dest = m.getDest();
+	Point delta = m.getDelta();
 	ChessPiece[][] newBoard = new ChessPiece[size.x][size.y];
 
 	for (int x = 0; x < size.x; x++) {
@@ -163,28 +175,29 @@ public class ChessBoard{
 	    }
 	}
 
-	ChessPiece pc = getPiece(m.getOrig());
-	newBoard[m.getOrig().x][m.getOrig().y] = null;
-	newBoard[m.getDest().x][m.getDest().y] = pc.move();
+	ChessPiece pc = getPiece(orig);
+	newBoard[orig.x][orig.y] = null;
+	newBoard[dest.x][dest.y] = pc.move();
 
-	boolean pawnPassing = (getPiece(m.getOrig()).toString().equals("P")
+	boolean pawnPassing = (getPiece(orig).toString().equals("P")
 			       && Math.abs(m.getDelta().y) == 2);
 
+	boolean castling = (getPiece(orig).toString().equals("K")
+			    && Math.abs(m.getDelta().x) == 2);
+
 	if (pawnPassing) {
-	    Point passingSquare = new Point(m.getDest().x,
-					    (m.getDest().y + m.getOrig().y)/2);
+            Point passingSquare = new Point(dest.x,
+                                            (dest.y + orig.y)/2);
+
 	    return new PassedBoard(size,
 				   newBoard,
-				   move(m.getOrig(), passingSquare));
+				   move(orig, passingSquare));
+	} else if (castling) {
+	    return new ChessBoard(size, newBoard).move(m.rookCastlingMove(this));
 	} else {
 	    return new ChessBoard(size, newBoard);
 	}
     }
-
-    public ChessBoard move(Point orig, Point dest) {
-	return move(new ChessMove(orig, dest));
-    }
-    
 
     public void displayBoard() {
         System.out.print(this);

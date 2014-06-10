@@ -65,4 +65,17 @@ public class ChessMove{
 	
 	return true;
     }
+
+    /**
+     * pre: given a king's castling move, m, return the accompanying Rook's move.
+     */
+    public ChessMove rookCastlingMove(ChessBoard board) {
+	if (delta.x > 0) {
+	    return new ChessMove(new Point(board.size.x - 1, orig.y),
+				 new Point(orig.x + 1, orig.y));
+	} else {
+	    return new ChessMove(new Point(0, orig.y),
+				 new Point(orig.x - 1, orig.y));
+	}
+    }
 }
