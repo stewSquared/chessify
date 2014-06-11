@@ -1,7 +1,8 @@
 public class Game {
 
     public static void main(String args[]) {
-	textPlay(new ChessBoard());
+	textPlay(args.length == 0 ? new ChessBoard()
+		 : new ChessBoard(args[0]));
     }
 
     public static void textPlay(ChessBoard board) {
