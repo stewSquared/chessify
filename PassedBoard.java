@@ -17,8 +17,10 @@ public class PassedBoard extends ChessBoard {
 	this.passingBoard = passingBoard;
     }
 
-    public boolean legalMove(ChessMove m) {
-	return super.legalMove(m)
+    public boolean legalmove(ChessMove m) { return legalMove(m, null); }
+
+    public boolean legalMove(ChessMove m, String team) {
+	return super.legalMove(m, team)
 	    || (getPiece(m.getOrig()).toString().equals("P")
 		&& passingBoard.legalMove(m));
     }
@@ -30,7 +32,7 @@ public class PassedBoard extends ChessBoard {
 
     private boolean inPassing(ChessMove m) {
 	return getPiece(m.getOrig()).toString().equals("P")
-	    && !super.legalMove(m)
-	    && passingBoard.legalMove(m);
+	    && this.getPiece(m.getDest()) == null
+	    && passingBoard.getPiece(m.getDest()) != null;
     }
 }

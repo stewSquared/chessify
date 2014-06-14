@@ -63,6 +63,8 @@ public class ChessBoard{
         board[pos.x][pos.y] = pc;
     }
     
+    public boolean legalMove(ChessMove m) { return legalMove(m, null); }
+
     public boolean legalMove(ChessMove m, String team) {
         Point orig = m.getOrig();
         Point dest = m.getDest();
@@ -86,10 +88,6 @@ public class ChessBoard{
         return true;
     }
 
-    public boolean legalMove(ChessMove m) {
-        return legalMove(m, null);
-    }
-
     /**
      * pre: The piece indicated by move exists. This function is only
      * expected to be called from legalMove.
@@ -98,13 +96,41 @@ public class ChessBoard{
      * king in check.
      */
     private boolean moveRevealsCheck(ChessMove m) {
-        return false;//move(m).kingInCheck(getPiece(m.getOrig()).team);
-        
+        return move(m).kingInCheck(getPiece(m.getOrig()).team);
     }
 
     public boolean kingInCheck(String team) {
-        // TODO
-        return false;
+	// Stew: This method is sooo fugly. I'd know. I wrote it.
+	Point pos;
+	Point kingPos = new Point(size.x,size.y);
+	ChessPiece pc;
+
+	for (int x = 0; x < size.x; x++) {
+	    for (int y = 0; y < size.y; y++) {
+		pos = new Point(x,y);
+		pc = getPiece(pos);
+		if (pc != null && pc.team == team
+		    && pc.toString().equals("K"))
+		    
+		    kingPos = pos;
+	    }
+	}
+
+	assert !kingPos.equals(new Point(size.x,size.y))
+	    : "You didn't find the king, bud.";
+
+	for (int x = 0; x < size.x; x++) {
+	    for (int y = 0; y < size.y; y++) {
+		pos = new Point(x,y);
+		pc = getPiece(pos);
+		if (pc != null && pc.team != team
+		    && pc.legalMove(new ChessMove(pos, kingPos), this))
+				    
+		    return true;
+	    }
+	}
+
+	return false;
     }
     
     /**

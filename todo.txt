@@ -2,10 +2,14 @@
 [ ]GUI
 [ ]ICCF
 [ ]Game Logic:
-- [ ]Check for kings in check (BoardGame.moveRevealsCheck) <- Stew
-- [ ]Checkmate
+- [X]Check for kings in check (BoardGame.moveRevealsCheck) <- Stew
+- [ ]Checkmate <- Stew
 - [X]Player owns the piece they're trying to move <- Stew
 - [X]en passant <- Stew
 - [X]castling <- Stew
-- [ ]Pawn promotions
+- [ ]Pawn promotions <- Stew
+[ ] Unit Tests?
+[ ] Automated games?
+[ ] Game record/replay?
+[ ] Algebraic notation?
 

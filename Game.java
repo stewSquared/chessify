@@ -16,7 +16,7 @@ public class Game {
 	    System.out.println("" + player + " to go:");
 	    System.out.println("\n"+board+"\n");
 
-	    ChessMove m = white.move(board);
+	    ChessMove m = player.move(board);
 	    while(!board.legalMove(m, player.toString())) {
 		System.out.println(""+m+" is not a legal move for "+player);
 		m = player.move(board);
