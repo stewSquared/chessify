@@ -17,14 +17,17 @@ public class King extends ChessPiece {
 
 	if (!moved()
 	    && Math.abs(dx) == 2
-	    && Math.abs(dy) == 0
-	    && board.legalMove(m.rookCastlingMove(board))
-	    && !board.getPiece(m.rookCastlingMove(board).getOrig()).moved()) {
-
-	    Point inter = new Point(orig.x + ((dx > 0) ? 1 : -1),
-				    orig.y);
-
-	    return super.legalMove(m, board)
+	    && Math.abs(dy) == 0) { // attempting a castle
+	    
+	    ChessMove c = m.rookCastlingMove(board);
+	    ChessPiece r = board.getPiece(c.getOrig());
+	    Point inter = new Point(orig.x + ((dx > 0) ? 1 : -1), orig.y);
+				    
+	    return r != null
+		&& !r.moved()
+		&& board.legalMove(c)
+		&& board.getPiece(inter) == null
+		&& board.getPiece(m.getDest()) == null
 		&& !board.kingInCheck(board.getPiece(orig).team)
 		&& board.legalMove(new ChessMove(orig, inter));
 	}
