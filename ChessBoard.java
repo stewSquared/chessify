@@ -1,5 +1,6 @@
 import java.awt.Point;
 import java.io.*;
+import java.util.Vector;
 
 public class ChessBoard{
 
@@ -88,6 +89,21 @@ public class ChessBoard{
         return true;
     }
 
+    public Vector<Point> occupiedBy(String team) {
+	Point pos;
+	ChessPiece pc;
+	Vector<Point> occupied = new Vector<Point>(16);
+	
+	for (int x = 0; x < size.x; x++) {
+	    for (int y = 0; y < size.y; y++) {
+		pos = new Point(x,y);
+		pc = getPiece(pos);
+		if (pc != null && pc.team == team) occupied.add(pos);
+	    }
+	}
+	return occupied;
+    }
+
     /**
      * pre: The piece indicated by move exists. This function is only
      * expected to be called from legalMove.
@@ -96,41 +112,81 @@ public class ChessBoard{
      * king in check.
      */
     private boolean moveRevealsCheck(ChessMove m) {
-        return move(m).kingInCheck(getPiece(m.getOrig()).team);
+	return move(m).kingInCheck(getPiece(m.getOrig()).team);
     }
 
     public boolean kingInCheck(String team) {
-	// Stew: This method is sooo fugly. I'd know. I wrote it.
-	Point pos;
-	Point kingPos = new Point(size.x,size.y);
-	ChessPiece pc;
+	String enemyTeam = team.equals(BLACK) ? WHITE : BLACK;
+	return !kingCheckers(enemyTeam).isEmpty();
+    }
 
-	for (int x = 0; x < size.x; x++) {
-	    for (int y = 0; y < size.y; y++) {
-		pos = new Point(x,y);
-		pc = getPiece(pos);
-		if (pc != null && pc.team == team
-		    && pc.toString().equals("K"))
-		    
-		    kingPos = pos;
+    public Vector<Point> kingCheckers(String team) {
+	String enemyTeam = team.equals(BLACK) ? WHITE : BLACK;
+	Point kingPos = kingPos(enemyTeam);
+	Vector<Point> checkers = new Vector<Point>();
+
+	for (Point p : occupiedBy(team)) {
+	    ChessPiece pc = getPiece(p);
+	    if (pc != null && pc.team == team
+		&& pc.legalMove(new ChessMove(p, kingPos), this))
+
+		checkers.add(p);
+	}
+	return checkers;
+    }
+
+    public Point kingPos(String team) {
+	for (Point p : occupiedBy(team))
+	    if (getPiece(p).toString().equals("K"))
+		return p;
+	return null;
+    }
+
+    /**
+     * Calculate whether team's king is checkmated. The king is free
+     * if any of the following are true:
+     *
+     * - There are noChecks
+     * - The kingCanEscape
+     * - The checkIsBlockable
+     *
+     */
+    public boolean checkMate(String team) {
+	String enemyTeam = team.equals(BLACK) ? WHITE : BLACK;
+	Point kingPos = kingPos(team);
+	Vector<Point> checkers = kingCheckers(enemyTeam);
+	boolean noChecks = checkers.size() < 1;
+	boolean kingCanEscape = false;
+	boolean checkIsBlockable = false;
+
+	if (noChecks) return false;
+
+	for (int dx = -1; dx <= 1; dx++) {
+	    for (int dy = -1; dy <= 1; dy++) {
+		Point escapePos = kingPos.getLocation();
+		escapePos.translate(dx, dy);
+		if (legalMove(new ChessMove(kingPos, escapePos))) {
+		    kingCanEscape = true;
+		}
 	    }
 	}
+	if (kingCanEscape) return false;
 
-	assert !kingPos.equals(new Point(size.x,size.y))
-	    : "You didn't find the king, bud.";
-
-	for (int x = 0; x < size.x; x++) {
-	    for (int y = 0; y < size.y; y++) {
-		pos = new Point(x,y);
-		pc = getPiece(pos);
-		if (pc != null && pc.team != team
-		    && pc.legalMove(new ChessMove(pos, kingPos), this))
-				    
-		    return true;
+	if (checkers.size() == 1) {
+	    for (Point pathPos : new ChessMove(checkers.get(0),
+					       kingPos).path()) {
+		for (Point allyPos : occupiedBy(team)) {
+		    ChessPiece pc = getPiece(allyPos);
+		    if (( pc.toString().equals("R")
+			  || pc.toString().equals("B")
+			  || pc.toString().equals("Q") )
+			&& pc.legalMove(new ChessMove(allyPos, pathPos),
+					this))
+			checkIsBlockable = true;
+		}
 	    }
 	}
-
-	return false;
+	return !checkIsBlockable; // && !kingCanEscape && !noChecks;
     }
     
     /**

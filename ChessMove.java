@@ -1,4 +1,5 @@
 import java.awt.Point;
+import java.util.Vector;
 import java.util.regex.*;
 
 public class ChessMove{
@@ -61,19 +62,29 @@ public class ChessMove{
      * post: return true if all spaces between orig and dest open
      */
     public boolean pathFree(ChessBoard b) {
+	for (Point pos : path())
+	    if (!b.isEmpty(pos)) return false;
+	return true;
+    }
+
+    public Vector<Point> path() {
 	Point dir = new Point(delta.x == 0 ? 0 : Math.abs(delta.x)/delta.x,
 			      delta.y == 0 ? 0 : Math.abs(delta.y)/delta.y);
-	if (dir.equals(new Point(0,0))) return true;
+
+	if (dir.equals(new Point(0,0))) return new Vector<Point>();
+
+	Vector<Point> pathPositions =
+	    new Vector<Point>(Math.abs(Math.max(delta.x, delta.y) - 1));
 	
 	Point path = orig.getLocation();
 	path.translate(dir.x, dir.y);
 	
 	while (!path.equals(dest)) {
-	    if (!b.isEmpty(path)) return false;
+	    pathPositions.add(path.getLocation());
 	    path.translate(dir.x, dir.y);
 	}
 	
-	return true;
+	return pathPositions;
     }
 
     /**
