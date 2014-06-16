@@ -8,7 +8,7 @@ public class Bishop extends ChessPiece {
 
     public String toString() { return "B"; }
 
-    public ChessPiece move() { return new Bishop(team, this); }
+    public ChessPiece move(ChessMove m) { return new Bishop(team, this); }
     
     public boolean legalMove(ChessMove m, ChessBoard board) {
 	int dx = m.getDelta().x;

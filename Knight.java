@@ -8,7 +8,7 @@ public class Knight extends ChessPiece {
 
     public String toString() { return "N"; }
     
-    public ChessPiece move() { return new Knight(team, this); }
+    public ChessPiece move(ChessMove m) { return new Knight(team, this); }
     
     public boolean legalMove(ChessMove m, ChessBoard board) {
 	int dx = m.getDelta().x;

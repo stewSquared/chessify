@@ -150,7 +150,7 @@ public class ChessBoard{
 
         ChessPiece pc = getPiece(orig);
         newBoard[orig.x][orig.y] = null;
-        newBoard[dest.x][dest.y] = pc.move();
+        newBoard[dest.x][dest.y] = pc.move(m);
 
         boolean pawnPassing = (getPiece(orig).toString().equals("P")
                                && Math.abs(m.getDelta().y) == 2);
@@ -231,4 +231,3 @@ public class ChessBoard{
         return boardstr;
     }
 }
-

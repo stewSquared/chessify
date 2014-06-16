@@ -16,20 +16,24 @@ public abstract class ChessPiece {
      * Map character to chess piece.
      */
     public static ChessPiece fromChar(String team, char pc) {
+	return fromChar(team, pc, null);
+    }
+
+    public static ChessPiece fromChar(String team, char pc, ChessPiece parent) {
 	pc = Character.toUpperCase(pc);
-	if (pc == 'P') {return new Pawn(team);
-	} else if (pc == 'K') { return new King(team);
-	} else if (pc == 'Q') { return new Queen(team);
-	} else if (pc == 'N') { return new Knight(team);
-	} else if (pc == 'B') { return new Bishop(team);
-	} else if (pc == 'R') { return new Rook(team);
+	if (pc == 'P') {return new Pawn(team, parent);
+	} else if (pc == 'K') { return new King(team, parent);
+	} else if (pc == 'Q') { return new Queen(team, parent);
+	} else if (pc == 'N') { return new Knight(team, parent);
+	} else if (pc == 'B') { return new Bishop(team, parent);
+	} else if (pc == 'R') { return new Rook(team, parent);
 	} else { return null;
 	}
     }
 
     public abstract String toString();
 
-    public abstract ChessPiece move();
+    public abstract ChessPiece move(ChessMove m);
 
     public String getTeam() { return team; }
 

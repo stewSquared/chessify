@@ -17,12 +17,22 @@ public class Pawn extends ChessPiece {
 
     public String toString() { return "P"; }
 
-    public ChessPiece move() {
-	return new Pawn(team, this, false);
+    public ChessPiece move(ChessMove m) {
+	return ((m.getPromotion() == 0) ?
+		new Pawn(team, this, false) :
+		ChessPiece.fromChar(this.team,
+				    m.getPromotion(),
+				    (ChessPiece) this));
     }
 
     public Pawn pass() {
 	return new Pawn(team, this, true);
+    }
+
+    private boolean promotePosition(Point pos, ChessBoard board) {
+	int finalRow = ((team == ChessBoard.BLACK) ? board.size.y - 1 :
+			(team == ChessBoard.WHITE) ? 0 : -1);
+	return pos.y == finalRow;
     }
 
     public boolean legalMove(ChessMove m, ChessBoard board) {
@@ -30,11 +40,13 @@ public class Pawn extends ChessPiece {
 	int dy = m.getDelta().y;
 	
         boolean badDirection =
-            (team == "white" && dy >= 0)
-	    || (team == "black" && dy <= 0);
+            (team == ChessBoard.WHITE && dy >= 0)
+	    || (team == ChessBoard.BLACK && dy <= 0);
 	
         if (badDirection) return false;
-        
+
+	if (!(promotePosition(m.getDest(), board)
+	      ^ m.getPromotion() == 0)) return false;
 	
 	if (dx == 0) { // straight?
             return board.isEmpty(m.getDest()) && m.pathFree(board)

@@ -4,12 +4,18 @@ import java.util.regex.*;
 public class ChessMove{
 
     public static final Pattern SMITH_NOTATION_RE =
-	Pattern.compile("([a-h][1-8]){2}");
+	Pattern.compile("([a-h][1-8]){2}[EcC]?[NBRQ]?");
+    private static final Pattern promoting = Pattern.compile(".*[NBRQ]$");
 
     protected final Point orig;
     protected final Point dest;
     protected final Point delta;
     protected final String movestr;
+
+    //private final boolean enPassant;
+    //private final boolean shortCastle;
+    //private final boolean longCastle;
+    private final char promotion;
 
     public ChessMove(String movestr) {
 	assert SMITH_NOTATION_RE.matcher(movestr).matches()
@@ -21,6 +27,8 @@ public class ChessMove{
 			      8 - Integer.parseInt(movestr.substring(3,4)));
 	this.delta = new Point(dest.x - orig.x,
 			       dest.y - orig.y);
+	this.promotion = promoting.matcher(movestr).matches() ?
+	    movestr.charAt(movestr.length() - 1) : 0;
 	this.movestr = movestr;
     }
 
@@ -33,6 +41,7 @@ public class ChessMove{
 	String origRank = "" + (8 - orig.y);
 	String destFile = "" + (char) (((int) 'a') + dest.x);
 	String destRank = "" + (8 - dest.y);
+	this.promotion = 0;
 	this.movestr = origFile + origRank + 'x' + destFile + destRank;
     }
 
@@ -44,6 +53,7 @@ public class ChessMove{
     public Point getOrig() { return orig.getLocation(); }
     public Point getDest() { return dest.getLocation(); }
     public Point getDelta() { return delta.getLocation(); }
+    public char getPromotion() { return promotion; }
 
     /** 
      * pre: destination is on the same rank/file/diagonal line.
