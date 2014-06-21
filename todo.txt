@@ -8,7 +8,8 @@
 - [X]en passant <- Stew
 - [X]castling <- Stew
 - [X]Pawn promotions <- Stew
-[ ] Unit Tests <- Stew
+[/] Unit Tests <- Stew
+[ ] Equals method
 [ ] Capablanca Chess
 [ ] Grand Chess
 [ ] Omega Chess
