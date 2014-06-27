@@ -9,7 +9,7 @@
 - [X]castling <- Stew
 - [X]Pawn promotions <- Stew
 [/] Unit Tests <- Stew
-[ ] Equals method
+[X] Equals method
 [ ] Capablanca Chess
 [ ] Grand Chess
 [ ] Omega Chess

@@ -286,4 +286,21 @@ public class ChessBoard{
 
         return boardstr;
     }
+
+    public boolean equals(Object object) {
+	ChessBoard that = (ChessBoard) object;
+	for (int x = 0; x < size.x; x++) {
+	    for (int y = 0; y < size.y; y++) {
+		Point pos = new Point(x,y);
+		ChessPiece p = this.getPiece(pos);
+		ChessPiece q = that.getPiece(pos);
+		if ((p == null ^ q == null)
+		    || (p != null && q != null
+			&& !p.toString().equals(q.toString()))) {
+		    return false;
+		}
+	    }
+	}
+	return true;
+    } 
 }
