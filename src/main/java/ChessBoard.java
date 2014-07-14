@@ -41,7 +41,13 @@ public class ChessBoard{
     }
 
     public ChessPiece getPiece(Point pos) {
-        return board[pos.x][pos.y];
+        return getPiece(pos.x, pos.y);
+    }
+
+    public ChessPiece getPiece(String pos) {
+	int x = pos.charAt(0) - 'a';
+	int y = 7 - (pos.charAt(1) - '1');
+	return getPiece(x, y);
     }
 
     public ChessPiece getPiece(int tx, int ty) {
@@ -64,6 +70,10 @@ public class ChessBoard{
         board[pos.x][pos.y] = pc;
     }
     
+    public boolean legalMove(String movestr) {
+	return legalMove(new ChessMove(movestr), null);
+    }
+
     public boolean legalMove(ChessMove m) { return legalMove(m, null); }
 
     public boolean legalMove(ChessMove m, String team) {
@@ -124,6 +134,7 @@ public class ChessBoard{
 	String enemyTeam = team.equals(BLACK) ? WHITE : BLACK;
 	Point kingPos = kingPos(enemyTeam);
 	Vector<Point> checkers = new Vector<Point>();
+	if (kingPos == null) return checkers;
 
 	for (Point p : occupiedBy(team)) {
 	    ChessPiece pc = getPiece(p);
@@ -226,6 +237,10 @@ public class ChessBoard{
         } else {
             return new ChessBoard(size, newBoard);
         }
+    }
+
+    public ChessBoard move(String movestr) {
+	return move(new ChessMove(movestr));
     }
 
     private ChessBoard move(Point orig, Point dest) {
