@@ -159,10 +159,21 @@ class Article3 extends FunSuite {
     board.legalMove("f2g3") === false
   }
 
-  test("3.7 : En passante capture") {
+  test("3.7 : En passant capture") {
     val board = new ChessBoard(path + "pawns-d.cb")
     board.move("e7e5").legalMove("d5e6") === true
     board.move("e7e5").move("d5e6").getPiece("e5") === null
     board.move("e7e5").move("a2a3").move("a7a6").legalMove("d5e6") === false
+  }
+
+  test("3.7 : Pawn promotion") {
+    val board = new ChessBoard(path + "pawns-e.cb")
+    board.legalMove("e7e8") === false
+    board.move("e7e8B").getPiece("e8").toString === "B"
+    board.move("e7e8R").getPiece("e8").toString === "R"
+    board.move("e7e8Q").getPiece("e8").toString === "Q"
+    board.move("e7e8N").getPiece("e8").toString === "N"
+    board.legalMove("e7e8P") === false
+    board.legalMove("e7e8K") === false
   }
 }

@@ -31,8 +31,6 @@ public abstract class ChessPiece {
 	}
     }
 
-    public abstract String toString();
-
     public abstract ChessPiece move(ChessMove m);
 
     public String getTeam() { return team; }
